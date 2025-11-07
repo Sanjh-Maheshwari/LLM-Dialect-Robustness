@@ -4,7 +4,8 @@ from transformers import (
     AutoModelForCausalLM,
     TrainingArguments,
     Trainer,
-    DataCollatorForLanguageModeling
+    DataCollatorForLanguageModeling,
+    BitsAndBytesConfig
 )
 from peft import (
     LoraConfig,
@@ -17,14 +18,15 @@ from loguru import logger
 import os
 import json
 import random
+from accelerate import PartialState
 
 # Define varieties and tasks
-# VARIETIES = ["en-AU", "en-IN", "en-UK"]
-VARIETIES = ["en-UK"]
-TASKS = ["Sarcasm"]
-DOMAINS = ["Reddit"]
+VARIETIES = ["en-AU", "en-IN", "en-UK"]
+# VARIETIES = ["en-UK"]
+TASKS = ["Sarcasm", "Sentiment"]
+DOMAINS = ["Reddit", "Google"]
 
-class BESTTIEPeftTrainer:
+class BESTTIEPeftQLoraTrainer:
     def __init__(self, model_id="meta-llama/Llama-3.1-8B"):
         self.model_id = model_id
         self.base_model = None
@@ -36,15 +38,27 @@ class BESTTIEPeftTrainer:
         
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_id)
         self.tokenizer.pad_token = self.tokenizer.eos_token
+
+        self.bnb_config = BitsAndBytesConfig(  
+            load_in_4bit= True,
+            bnb_4bit_quant_type= "nf4",
+            bnb_4bit_compute_dtype= torch.bfloat16,
+            bnb_4bit_use_double_quant= False,
+            bnb_4bit_quant_storage=torch.bfloat16,
+        )
         
         self.base_model = AutoModelForCausalLM.from_pretrained(
             self.model_id,
             torch_dtype=torch.bfloat16,
-            # device_map="auto"
+            device_map=PartialState().process_index,
+            # device_map="auto",
+            quantization_config=self.bnb_config,
+            trust_remote_code=True,
         )
         
         self.base_model.config.use_cache = False
         self.base_model.config.pretraining_tp = 1
+        self.base_model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
         self.base_model = prepare_model_for_kbit_training(self.base_model)
         
         return self.base_model, self.tokenizer
@@ -246,12 +260,14 @@ class BESTTIEPeftTrainer:
             batched=False,
             remove_columns=dataset.column_names
         )
+
+        print(dataset[0])
         
         return dataset
 
     def setup_peft_model(self):
         """Setup PEFT model with LoRA configuration"""
-        
+
         peft_config = LoraConfig(
             task_type=TaskType.CAUSAL_LM,
             r=16,
@@ -316,11 +332,12 @@ class BESTTIEPeftTrainer:
             lr_scheduler_type="cosine",
             logging_steps=10,
             save_strategy="no", 
-            optim="adamw_torch",
+            optim="paged_adamw_32bit",
             warmup_ratio=0.03,
             max_grad_norm=0.3,
             weight_decay=0.01,
-            bf16=True,
+            fp16=False,
+            bf16=False,
             report_to=None,
             remove_unused_columns=False,
             group_by_length=True,
@@ -401,13 +418,14 @@ class BESTTIEPeftTrainer:
         logger.info(f"Adapter registry saved to {registry_path}")
 
 def main():
+    
     # Initialize trainer
-    trainer = BESTTIEPeftTrainer("mistralai/Mistral-Small-Instruct-2409")
+    trainer = BESTTIEPeftQLoraTrainer("mistralai/Mistral-Small-Instruct-2409")
     
     # Train all adapters with FineTome augmentation
     trainer.train_all_adapters(
         json_path="data/instruction/besstie.json",
-        output_dir="output/besstie_adapters_multi_mistral",
+        output_dir="output/besstie_adapters_multi",
         augment_finetome=True,
         finetome_samples_per_variety=2000
     )

@@ -11,7 +11,6 @@ from sklearn.metrics import accuracy_score, f1_score, classification_report
 from tqdm import tqdm
 
 from evaluator.llm_services.llama_w_adapters import LlamaClassifier
-from evaluator.llm_services.llama import LlamaBaseClassifier
 
 warnings.filterwarnings('ignore')
     
@@ -90,7 +89,7 @@ def evaluate_dialect(model, variety, task, domain, json_path):
         prediction = model.predict(
             instruction = instruction, 
             context = context, 
-            dialect = variety,
+            dialect = "original",
             task = task,
             domain = domain
         )
@@ -113,7 +112,7 @@ def main():
     all_results = {}    
 
     logger.info("Initializing Llama model...")
-    model = LlamaBaseClassifier()
+    model = LlamaClassifier()
 
     if model.model is None:
         print("Failed to load Llama model. Please check your setup.")
