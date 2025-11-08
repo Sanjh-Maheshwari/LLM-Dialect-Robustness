@@ -50,7 +50,7 @@ class BESTTIEPeftQLoraTrainer:
         self.base_model = AutoModelForCausalLM.from_pretrained(
             self.model_id,
             torch_dtype=torch.bfloat16,
-            device_map=PartialState().process_index,
+            # device_map=PartialState().process_index,
             # device_map="auto",
             quantization_config=self.bnb_config,
             trust_remote_code=True,
