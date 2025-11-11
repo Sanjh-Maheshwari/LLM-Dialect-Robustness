@@ -9,6 +9,46 @@ VARIETIES = ["en-AU", "en-IN", "en-UK"]
 TASKS = ["Sarcasm", "Sentiment"]
 DOMAINS = ["Reddit", "Google"]
 
+def validate_message_alternation(messages):
+    """
+    Validate that messages alternate properly between user and assistant roles.
+    Returns (is_valid, error_message)
+    """
+    
+    if not messages or len(messages) == 0:
+        return False, "Empty messages list"
+    
+    # Filter out system messages and tool-related messages for validation
+    conversation_messages = [
+        msg for msg in messages 
+        if msg.get('role') not in ['system', 'tool', 'tool_results']
+    ]
+    
+    if len(conversation_messages) == 0:
+        return False, "No user/assistant messages found"
+    
+    # First message should be from user
+    if conversation_messages[0]['role'] != 'user':
+        return False, f"First message must be 'user', got '{conversation_messages[0]['role']}'"
+    
+    # Check alternation
+    for i in range(1, len(conversation_messages)):
+        current_role = conversation_messages[i]['role']
+        previous_role = conversation_messages[i-1]['role']
+        
+        if current_role == previous_role:
+            return False, f"Consecutive {current_role} messages at position {i}"
+        
+        # Only user and assistant are allowed (after filtering)
+        if current_role not in ['user', 'assistant']:
+            return False, f"Invalid role '{current_role}' at position {i}"
+    
+    # Should end with assistant message for training
+    if conversation_messages[-1]['role'] != 'assistant':
+        return False, f"Last message should be 'assistant', got '{conversation_messages[-1]['role']}'"
+    
+    return True, None
+
 def convert_besstie_to_chat_format(text, label, task, variety, example_id):
     """Convert BESSTIE data to OpenAI chat format"""
     
@@ -130,13 +170,16 @@ def prepare_dataset(
     """Prepare all dataset variants"""
     
     os.makedirs(output_dir, exist_ok=True)
+
+    total_samples = 0
+    total_skipped = 0
     
     for variety in VARIETIES:
         for task in TASKS:
             domains = DOMAINS if task == "Sentiment" else ["Reddit"]
             
             for domain in domains:
-                logger.info(f"\n{'='*60}")
+                logger.info(f"{'='*60}")
                 logger.info(f"Preparing: {variety}/{task}/{domain}")
                 logger.info(f"{'='*60}")
                 
@@ -156,17 +199,34 @@ def prepare_dataset(
                     samples = augment_with_finetome(
                         samples, variety, task, finetome_samples, seed
                     )
+
+                valid_samples = []
+                final_skipped = 0
+                for sample in samples:
+                    is_valid, error = validate_message_alternation(sample['messages'])
+                    if is_valid:
+                        valid_samples.append(sample)
+                    else:
+                        final_skipped += 1
+                        logger.debug(f"Skipped in final pass: {error}")
+                
+                if final_skipped > 0:
+                    logger.warning(f"Skipped {final_skipped} samples in final validation")
                 
                 # Save as JSONL
                 output_file = f"{output_dir}/{variety}_{task}_{domain}.jsonl"
                 with open(output_file, 'w') as f:
-                    for sample in samples:
+                    for sample in valid_samples:
                         f.write(json.dumps(sample) + '\n')
                 
-                logger.info(f"Saved {len(samples)} samples to {output_file}")
+                logger.info(f"Saved {len(valid_samples)} samples to {output_file}")
+                total_samples += len(valid_samples)
+                total_skipped += final_skipped
     
-    logger.info("\n" + "="*60)
+    logger.info("="*60)
     logger.info("Dataset preparation complete!")
+    logger.info(f"Total valid samples: {total_samples}")
+    logger.info(f"Total skipped samples: {total_skipped}")
     logger.info("="*60)
 
 def main():

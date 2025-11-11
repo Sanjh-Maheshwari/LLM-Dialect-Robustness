@@ -21,6 +21,12 @@ prompt_templates = {
         + "### Instruction:\n{instruction}\n\n### Response:\n",
         "response_split": "### Response:",
     },
+    "mistral": {
+        "description": "Template for Mistral-Small-Instruct-2409",
+        "prompt_input": "[INST] {instruction}\n\nInput: {input} [/INST] ",
+        "prompt_no_input": "[INST] {instruction} [/INST] ",
+        "response_split": "[/INST]",
+    },
 }
 
 
