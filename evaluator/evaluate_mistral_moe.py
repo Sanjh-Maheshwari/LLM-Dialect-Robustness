@@ -15,7 +15,7 @@ from evaluator.llm_services.mistral_moe import MistralClassifier
 warnings.filterwarnings('ignore')
 
 VARIETIES = ["en-AU", "en-IN", "en-UK"]
-TASKS = ["Sentiment", "Sarcasm"]
+TASKS = ["Sarcasm"]
 DOMAINS = ["Reddit"]
 
 TEST_DATA_PATH = "data/instruction/besstie/test.json"
@@ -107,7 +107,7 @@ def evaluate_dialect(model, variety, task, domain, json_path):
     }
 
 def main():
-    logger.info("=== Besstie Dialect Evaluation with Mistral-2409 ===\n")
+    logger.info("=== Besstie Dialect Evaluation with Mistral-7b ===\n")
 
     all_results = {}    
 

@@ -44,6 +44,8 @@ class GenerateConfig:
         if self.prompter_ is None:
             self.prompter_ = Prompter(self.prompt_template)
 
+        # print(self.prompter_.generate_prompt(instruction=instruction, input=input))
+
         return self.prompter_.generate_prompt(instruction=instruction, input=input)
 
     def get_prompts(self) -> List[str]:

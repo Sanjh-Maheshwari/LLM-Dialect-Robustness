@@ -12,9 +12,9 @@ import moe_peft
 
 warnings.filterwarnings('ignore')
 
-class MistralClassifier:
+class GemmaClassifier:
     
-    def __init__(self, model_id="mistralai/Mistral-7B-Instruct-v0.1", lora_path = "/scratch/users/k24053411/"):
+    def __init__(self, model_id="google/gemma-2-9b-it", lora_path = "/scratch/users/k24053411/"):
         
         logger.info(f"Loading {model_id}")
         try:
@@ -31,12 +31,13 @@ class MistralClassifier:
             self.lora_path = lora_path
             self.generation_config = moe_peft.GenerateConfig(
                 adapter_name="default",
-                prompt_template="mistral",
+                prompt_template="gemma",
+                stop_token="<end_of_turn>"
             )
 
-            print(f"Mistral model loaded successfully with MoE-PEFT")
+            print(f"Gemma model loaded successfully with MoE-PEFT")
         except Exception as e:
-            print(f"Error loading Mistral model: {e}")
+            print(f"Error loading Gemma model: {e}")
             self.model = None
 
     def evaluate(
@@ -47,7 +48,7 @@ class MistralClassifier:
         top_p=0.75,
         top_k=40,
         repetition_penalty=1.1,
-        max_new_tokens=128,
+        max_new_tokens=50,
         stream_output=False,
     ):
         instruction = instruction.strip()
@@ -82,7 +83,7 @@ class MistralClassifier:
         """Predict fact verification label"""
         
   
-        lora_weights = os.path.join(self.lora_path, f"mixlora_mistral_{task.lower()}_{domain.lower()}_0")
+        lora_weights = os.path.join(self.lora_path, f"mixlora_gemma_{task.lower()}_{domain.lower()}_0")
 
         self.model.load_adapter(lora_weights, "default")
         
@@ -90,17 +91,17 @@ class MistralClassifier:
                                     instruction=instruction, 
                                     input=context,
                                     stream_output=False
-                            )
+                            ).strip("<end_of_turn>")
         
         self.model.unload_adapter("default")
+
+        logger.debug(response_text)
 
         for char in response_text:
             if char in ['0', '1']:
                 return char
 
         response_lower = response_text.lower()
-
-        logger.debug(response_lower)
         
         if any(word in response_lower for word in ['support', 'confirm', 'true', 'correct']):
             return '0'

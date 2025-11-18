@@ -1,7 +1,7 @@
 #!/bin/bash -l
-#SBATCH --output=/users/k24053411/individual_project/logs/axolotl/gemma_sarcasm_uk_ds.out
-#SBATCH --job-name=gemma_sarcasm_uk_ds
-#SBATCH --gres=gpu:4
+#SBATCH --output=/users/k24053411/individual_project/logs/axolotl/gemma_sentiment_uk_ds.out
+#SBATCH --job-name=gemma_sentiment_uk_ds
+#SBATCH --gres=gpu:2
 #SBATCH --constraint=a100
 #SBATCH --mem=16G
 #SBATCH --partition=gpu
@@ -22,4 +22,4 @@ cd /users/k24053411/individual_project/LLM-Dialect-Robustness
 
 export HF_HOME="/scratch/users/k24053411"
 
-axolotl train trainer/axolotl_configs/gemma/gemma_sarcasm_uk_ds.yaml
+axolotl train trainer/axolotl_configs/gemma/gemma_sentiment_uk_ds.yaml

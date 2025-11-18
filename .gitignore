@@ -208,3 +208,5 @@ __marimo__/
 
 # dataset files
 *.jsonl
+
+last_run_prepared/

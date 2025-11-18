@@ -10,16 +10,16 @@ import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score, classification_report
 from tqdm import tqdm
 
-from evaluator.llm_services.mistral_w_adapters import MistralClassifier
+from evaluator.llm_services.gemma2_w_adapters import GemmaClassifier
 
 warnings.filterwarnings('ignore')
     
-VARIETIES = ["en-AU", "en-IN", "en-UK"]
-TASKS = ["Sentiment", "Sarcasm"]
+VARIETIES = ["en-AU"]
+TASKS = ["Sarcasm"]
 DOMAINS = ["Reddit"]
 
 TEST_DATA_PATH = "data/instruction/besstie/test.json"
-RESULTS_DIR = "results_besstie/v1/mistral"
+RESULTS_DIR = "results_besstie/v1/gemma"
 os.makedirs(RESULTS_DIR, exist_ok=True)
 
 def convert_besstie_to_instruction_format(text, label, task, variety, example_id):
@@ -89,7 +89,7 @@ def evaluate_dialect(model, variety, task, domain, json_path):
         prediction = model.predict(
             instruction = instruction, 
             context = context, 
-            dialect = "original",
+            dialect = variety,
             task = task,
             domain = domain 
         )
@@ -107,15 +107,15 @@ def evaluate_dialect(model, variety, task, domain, json_path):
     }
 
 def main():
-    logger.info("=== Besstie Dialect Evaluation with Mistral-2409 ===\n")
+    logger.info("=== Besstie Dialect Evaluation with Gemma-2 ===\n")
 
     all_results = {}    
 
-    logger.info("Initializing Mistral model...")
-    model = MistralClassifier()
+    logger.info("Initializing Gemma model...")
+    model = GemmaClassifier()
 
     if model.model is None:
-        print("Failed to load Mistral model. Please check your setup.")
+        print("Failed to load Gemma model. Please check your setup.")
         return
     
     for task in TASKS:
