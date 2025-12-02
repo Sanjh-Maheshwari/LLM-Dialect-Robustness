@@ -85,6 +85,7 @@ class Prompter:
             else:
                 user_input = instruction
 
+            tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-Instruct-v0.1")
 
             if label:
                 messages = [
@@ -101,10 +102,31 @@ class Prompter:
                 res = tokenizer.apply_chat_template(
                     messages, add_generation_prompt=True, tokenize=False,
                 )
-            
-            res = tokenizer.apply_chat_template(
-                messages, add_generation_prompt=False, tokenize=False,
-            )
+
+        elif isinstance(self.template, str) and self.template == "phi": 
+
+            if input:
+                user_input = f"{instruction}\n{input}"
+            else:
+                user_input = instruction
+
+            tokenizer = AutoTokenizer.from_pretrained("microsoft/Phi-3-medium-4k-instruct")
+
+            if label:
+                messages = [
+                    {"role": "user", "content": user_input},
+                    {"role": "assistant", "content": label},
+                ]
+                res = tokenizer.apply_chat_template(
+                    messages, add_generation_prompt=False, tokenize=False,
+                )
+            else:
+                messages = [
+                    {"role": "user", "content": user_input},
+                ]
+                res = tokenizer.apply_chat_template(
+                    messages, add_generation_prompt=True, tokenize=False,
+                )
 
         else:
             if input:
@@ -134,6 +156,12 @@ class Prompter:
                     return output.split("[/INST]")[-1].strip()
                 return output.strip()
             
+            elif self.template == "phi":
+                if "<|assistant|>" in output:
+                    return output.split("<|assistant|>")[-1].strip()
+                return output.strip()
+            
+
             else:
                 logger.warning(f"Unknown template type: {self.template}, returning output as-is")
                 return output.strip()

@@ -15,7 +15,7 @@ from evaluator.llm_services.gemma_moe import GemmaClassifier
 warnings.filterwarnings('ignore')
 
 VARIETIES = ["en-AU", "en-IN", "en-UK"]
-TASKS = ["Sarcasm"]
+TASKS = ["Sentiment"]
 DOMAINS = ["Reddit"]
 
 TEST_DATA_PATH = "data/instruction/besstie/test.json"

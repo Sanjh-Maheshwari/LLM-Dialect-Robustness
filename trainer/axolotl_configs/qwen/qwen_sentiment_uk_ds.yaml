@@ -1,23 +1,21 @@
-base_model: google/gemma-2-9b-it
-# optionally might have model_type or tokenizer_type
+base_model: Qwen/Qwen2.5-7B-Instruct
 model_type: AutoModelForCausalLM
 tokenizer_type: AutoTokenizer
+
+trust_remote_code: true
 
 load_in_8bit: false
 load_in_4bit: false
 
-chat_template: gemma
-eot_tokens:
-  - <end_of_turn>
 datasets:
-  - path: data/axolotl/en-UK_Sarcasm_Reddit.jsonl
+  - path: data/axolotl/en-UK_Sentiment_Reddit.jsonl
     type: chat_template
+    chat_template: tokenizer_default
     roles_to_train: ["user", "assistant"] 
 
 dataset_prepared_path: last_run_prepared
 val_set_size: 0
-output_dir: /scratch/users/k24053411/axolotl/gemma/en-UK_Sarcasm_Reddit_adapter
-resume_from_checkpoint:
+output_dir: /scratch/users/k24053411/axolotl/qwen/en-UK_Sentiment_Reddit_adapter
 
 model_config:
   output_router_logits: true
@@ -30,7 +28,7 @@ sample_packing: true
 pad_to_sequence_len: false
 
 lora_r: 16
-lora_alpha: 16  
+lora_alpha: 16
 lora_dropout: 0.05
 lora_target_linear: true
 
@@ -51,16 +49,19 @@ bf16: true
 tf32: false
 
 gradient_checkpointing: true
+resume_from_checkpoint:
 logging_steps: 10
 flash_attention: false
 
-loss_watchdog_threshold: 10.0
+loss_watchdog_threshold: 5.0
 loss_watchdog_patience: 3
 
-warmup_ratio: 0.1
+warmup_ratio: 0.03
 evals_per_epoch: 1
 saves_per_epoch: 1
 save_optimizer_states: false
+
+deepspeed: configs/zero2.json
 
 weight_decay: 0.0
 save_first_step: false  # uncomment this to validate checkpoint saving works with your config

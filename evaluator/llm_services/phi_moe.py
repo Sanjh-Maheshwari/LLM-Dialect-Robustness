@@ -12,9 +12,9 @@ import moe_peft
 
 warnings.filterwarnings('ignore')
 
-class MistralClassifier:
+class PhiClassifier:
     
-    def __init__(self, model_id="mistralai/Mistral-7B-Instruct-v0.1", lora_path = "/scratch/users/k24053411/"):
+    def __init__(self, model_id="microsoft/Phi-3-medium-4k-instruct", lora_path = "/scratch/users/k24053411/"):
         
         logger.info(f"Loading {model_id}")
         try:
@@ -30,12 +30,13 @@ class MistralClassifier:
             self.lora_path = lora_path
             self.generation_config = moe_peft.GenerateConfig(
                 adapter_name="default",
-                prompt_template="mistral",
+                prompt_template="phi",
+                stop_token="<|end|>"
             )
 
-            print(f"Mistral model loaded successfully with MoE-PEFT")
+            print(f"Phi-3 Medium model loaded successfully with MoE-PEFT")
         except Exception as e:
-            print(f"Error loading Mistral model: {e}")
+            print(f"Error loading Phi-3 model: {e}")
             self.model = None
 
     def evaluate(
@@ -81,7 +82,7 @@ class MistralClassifier:
         """Predict fact verification label"""
         
   
-        lora_weights = os.path.join(self.lora_path, f"mixlora_mistral_{task.lower()}_{domain.lower()}_0")
+        lora_weights = os.path.join(self.lora_path, f"mixlora_phi_{task.lower()}_{domain.lower()}_0")
 
         self.model.load_adapter(lora_weights, "default")
         
@@ -89,7 +90,7 @@ class MistralClassifier:
                                     instruction=instruction, 
                                     input=context,
                                     stream_output=False
-                            )
+                            ).strip("<|end|>")
         
         self.model.unload_adapter("default")
 

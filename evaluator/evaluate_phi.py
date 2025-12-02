@@ -10,7 +10,7 @@ import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score, classification_report
 from tqdm import tqdm
 
-from evaluator.llm_services.gemma2_w_adapters import GemmaClassifier
+from evaluator.llm_services.phi_w_adapters import Phi3Classifier
 
 warnings.filterwarnings('ignore')
     
@@ -19,7 +19,7 @@ TASKS = ["Sarcasm", "Sentiment"]
 DOMAINS = ["Reddit"]
 
 TEST_DATA_PATH = "data/instruction/besstie/test.json"
-RESULTS_DIR = "results_besstie/v1/gemma"
+RESULTS_DIR = "results_besstie/v1/phi"
 os.makedirs(RESULTS_DIR, exist_ok=True)
 
 def convert_besstie_to_instruction_format(text, label, task, variety, example_id):
@@ -89,7 +89,7 @@ def evaluate_dialect(model, variety, task, domain, json_path):
         prediction = model.predict(
             instruction = instruction, 
             context = context, 
-            dialect = "original",
+            dialect = variety,
             task = task,
             domain = domain 
         )
@@ -107,15 +107,15 @@ def evaluate_dialect(model, variety, task, domain, json_path):
     }
 
 def main():
-    logger.info("=== Besstie Dialect Evaluation with Gemma-2 ===\n")
+    logger.info("=== Besstie Dialect Evaluation with Phi 3 ===\n")
 
     all_results = {}    
 
-    logger.info("Initializing Gemma model...")
-    model = GemmaClassifier()
+    logger.info("Initializing Phi 3 model...")
+    model = Phi3Classifier()
 
     if model.model is None:
-        print("Failed to load Gemma model. Please check your setup.")
+        print("Failed to load Phi 3 model. Please check your setup.")
         return
     
     for task in TASKS:

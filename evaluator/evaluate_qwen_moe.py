@@ -10,16 +10,16 @@ import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score, classification_report
 from tqdm import tqdm
 
-from evaluator.llm_services.gemma2_w_adapters import GemmaClassifier
+from evaluator_besstie.llm_services.qwen_moe import QwenClassifier
 
 warnings.filterwarnings('ignore')
-    
-VARIETIES = ["en-AU", "en-IN", "en-UK"]
-TASKS = ["Sarcasm", "Sentiment"]
+
+VARIETIES = ["en-AU", "en-IN"]
+TASKS = ["Sarcasm"]
 DOMAINS = ["Reddit"]
 
 TEST_DATA_PATH = "data/instruction/besstie/test.json"
-RESULTS_DIR = "results_besstie/v1/gemma"
+RESULTS_DIR = "results_besstie/v1/qwen"
 os.makedirs(RESULTS_DIR, exist_ok=True)
 
 def convert_besstie_to_instruction_format(text, label, task, variety, example_id):
@@ -89,9 +89,9 @@ def evaluate_dialect(model, variety, task, domain, json_path):
         prediction = model.predict(
             instruction = instruction, 
             context = context, 
-            dialect = "original",
+            dialect = variety,
             task = task,
-            domain = domain 
+            domain = domain
         )
         predictions.append(prediction) 
 
@@ -107,15 +107,15 @@ def evaluate_dialect(model, variety, task, domain, json_path):
     }
 
 def main():
-    logger.info("=== Besstie Dialect Evaluation with Gemma-2 ===\n")
+    logger.info("=== Besstie Dialect Evaluation with Qwen-2.5-7B ===\n")
 
     all_results = {}    
 
-    logger.info("Initializing Gemma model...")
-    model = GemmaClassifier()
+    logger.info("Initializing Qwen model...")
+    model = QwenClassifier()
 
     if model.model is None:
-        print("Failed to load Gemma model. Please check your setup.")
+        print("Failed to load Qwen model. Please check your setup.")
         return
     
     for task in TASKS:

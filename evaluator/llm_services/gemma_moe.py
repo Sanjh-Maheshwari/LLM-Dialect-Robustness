@@ -24,7 +24,6 @@ class GemmaClassifier:
                     device=moe_peft.executor.default_device_name(),
                     attn_impl="eager",
                     load_dtype=torch.bfloat16,
-                    bits=4,
             )
 
             self.tokenizer = moe_peft.Tokenizer(model_id)

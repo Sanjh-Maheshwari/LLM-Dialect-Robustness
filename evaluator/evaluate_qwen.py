@@ -10,12 +10,12 @@ import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score, classification_report
 from tqdm import tqdm
 
-from evaluator_besstie.llm_services.qwen_moe import QwenClassifier
+from evaluator.llm_services.qwen_w_adapters import QwenClassifier
 
 warnings.filterwarnings('ignore')
 
 VARIETIES = ["en-AU", "en-IN", "en-UK"]
-TASKS = ["Sentiment", "Sarcasm"]
+TASKS = ["Sarcasm", "Sentiment"]
 DOMAINS = ["Reddit"]
 
 TEST_DATA_PATH = "data/instruction/besstie/test.json"
