@@ -10,12 +10,14 @@ import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score, classification_report
 from tqdm import tqdm
 
-from evaluator.llm_services.phi_w_adapters import Phi3Classifier
+# from evaluator.llm_services.phi_w_adapters import Phi3Classifier
+# from evaluator.llm_services.merged.phi_ties import Phi3Classifier
+from evaluator.llm_services.merged.phi_lora_baseline import Phi3Classifier
 
 warnings.filterwarnings('ignore')
     
 VARIETIES = ["en-AU", "en-IN", "en-UK"]
-TASKS = ["Sarcasm", "Sentiment"]
+TASKS = ["Sarcasm"]
 DOMAINS = ["Reddit"]
 
 TEST_DATA_PATH = "data/instruction/besstie/test.json"
