@@ -176,7 +176,7 @@ def prepare_dataset(
     
     for variety in VARIETIES:
         for task in TASKS:
-            domains = DOMAINS if task == "Sentiment" else ["Reddit"]
+            domains = DOMAINS if task == "Sarcasm" else ["Reddit"]
             
             for domain in domains:
                 logger.info(f"{'='*60}")

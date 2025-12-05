@@ -1,4 +1,4 @@
-base_model: mistralai/Mistral-7B-Instruct-v0.1
+base_model: mistralai/Mistral-Small-Instruct-2409
 # optionally might have model_type or tokenizer_type
 model_type: AutoModelForCausalLM
 tokenizer_type: LlamaTokenizer
@@ -11,14 +11,19 @@ load_in_8bit: false
 load_in_4bit: false
 
 datasets:
-  - path: data/axolotl/en-AU_Sentiment_Reddit.jsonl
+  - path: data/axolotl/en-AU_Sarcasm_Google.jsonl
     type: chat_template
     chat_template: tokenizer_default
-    roles_to_train: ["user", "assistant"] 
+  - path: data/axolotl/en-IN_Sarcasm_Google.jsonl
+    type: chat_template
+    chat_template: tokenizer_default
+  - path: data/axolotl/en-UK_Sarcasm_Google.jsonl
+    type: chat_template
+    chat_template: tokenizer_default
 
 dataset_prepared_path: last_run_prepared
 val_set_size: 0
-output_dir: /scratch/users/k24053411/axolotl/mistral7b/en-AU_Sentiment_Reddit_adapter
+output_dir: /scratch/users/k24053411/axolotl/mistral-google-sarcasm
 
 model_config:
   output_router_logits: true

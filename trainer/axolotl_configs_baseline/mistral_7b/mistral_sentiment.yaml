@@ -11,14 +11,22 @@ load_in_8bit: false
 load_in_4bit: false
 
 datasets:
-  - path: data/axolotl/en-UK_Sarcasm_Reddit.jsonl
+  - path: data/axolotl/en-AU_Sentiment_Reddit.jsonl
     type: chat_template
     chat_template: tokenizer_default
-    roles_to_train: ["user", "assistant"] 
+    roles_to_train: ["user", "assistant"]
+  - path: data/axolotl/en-IN_Sentiment_Reddit.jsonl
+    type: chat_template
+    chat_template: tokenizer_default
+    roles_to_train: ["user", "assistant"]
+  - path: data/axolotl/en-UK_Sentiment_Reddit.jsonl
+    type: chat_template
+    chat_template: tokenizer_default
+    roles_to_train: ["user", "assistant"]
 
 dataset_prepared_path: last_run_prepared
 val_set_size: 0
-output_dir: /scratch/users/k24053411/axolotl/mistral7b/en-UK_Sarcasm_Reddit_adapter
+output_dir: /scratch/users/k24053411/axolotl/mistral7b/baseline/en_Sentiment_Reddit_adapter
 
 model_config:
   output_router_logits: true

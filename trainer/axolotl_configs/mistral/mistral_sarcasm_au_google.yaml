@@ -8,21 +8,21 @@ tokenizer_type: LlamaTokenizer
 trust_remote_code: true
 
 load_in_8bit: false
-load_in_4bit: true
+load_in_4bit: false
 
 datasets:
-  - path: data/axolotl/en-IN_Sentiment_Reddit.jsonl
+  - path: data/axolotl/en-AU_Sarcasm_Google.jsonl
     type: chat_template
     chat_template: tokenizer_default
 
 dataset_prepared_path: last_run_prepared
 val_set_size: 0
-output_dir: /scratch/users/k24053411/axolotl/mistral-in-reddit-sentiment
+output_dir: /scratch/users/k24053411/axolotl/mistral-au-google-sarcasm
 
 model_config:
   output_router_logits: true
 
-adapter: qlora
+adapter: lora
 lora_model_dir:
 
 sequence_len: 512
@@ -43,17 +43,15 @@ wandb_log_model:
 gradient_accumulation_steps: 4
 micro_batch_size: 1
 num_epochs: 5
-optimizer: adamw_torch_fused
+optimizer: adamw_torch
 lr_scheduler: cosine
 learning_rate: 0.00001
 
-bf16: auto
+bf16: true
 tf32: false
 
 gradient_checkpointing: true
-gradient_checkpointing_kwargs:
-  use_reentrant: true
-resume_from_checkpoint: /scratch/users/k24053411/axolotl/mistral-au-reddit-sentiment/checkpoint-476
+resume_from_checkpoint:
 logging_steps: 10
 flash_attention: false
 
@@ -65,19 +63,7 @@ evals_per_epoch: 1
 saves_per_epoch: 1
 save_optimizer_states: false
 
-weight_decay: 0.0
-fsdp:
-  - full_shard
-  - auto_wrap
-fsdp_config:
-  fsdp_limit_all_gathers: true
-  fsdp_sync_module_states: true
-  fsdp_offload_params: false
-  fsdp_use_orig_params: false
-  fsdp_cpu_ram_efficient_loading: false
-  fsdp_transformer_layer_cls_to_wrap: MistralDecoderLayer
-  fsdp_state_dict_type: FULL_STATE_DICT
-  fsdp_auto_wrap_policy: TRANSFORMER_BASED_WRAP
-special_tokens:
+deepspeed: configs/zero2.json
 
-save_first_step: true  # uncomment this to validate checkpoint saving works with your config
+weight_decay: 0.0
+save_first_step: false  # uncomment this to validate checkpoint saving works with your config

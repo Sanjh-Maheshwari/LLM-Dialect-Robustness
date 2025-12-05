@@ -10,13 +10,19 @@ chat_template: gemma
 eot_tokens:
   - <end_of_turn>
 datasets:
+  - path: data/axolotl/en-AU_Sarcasm_Reddit.jsonl
+    type: chat_template
+    roles_to_train: ["user", "assistant"]
   - path: data/axolotl/en-IN_Sarcasm_Reddit.jsonl
     type: chat_template
-    roles_to_train: ["user", "assistant"] 
+    roles_to_train: ["user", "assistant"]
+  - path: data/axolotl/en-UK_Sarcasm_Reddit.jsonl
+    type: chat_template
+    roles_to_train: ["user", "assistant"]
 
 dataset_prepared_path: last_run_prepared
 val_set_size: 0
-output_dir: /scratch/users/k24053411/axolotl/gemma/en-IN_Sarcasm_Reddit_adapter
+output_dir: /scratch/users/k24053411/axolotl/gemma/baseline/en_Reddit_Sarcasm_adapter
 resume_from_checkpoint:
 
 model_config:

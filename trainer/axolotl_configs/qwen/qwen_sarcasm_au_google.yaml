@@ -1,9 +1,6 @@
-base_model: mistralai/Mistral-Small-Instruct-2409
-# optionally might have model_type or tokenizer_type
+base_model: Qwen/Qwen2.5-7B-Instruct
 model_type: AutoModelForCausalLM
-tokenizer_type: LlamaTokenizer
-# Automatically upload checkpoint and final model to HF
-# hub_model_id: username/custom_model_name
+tokenizer_type: AutoTokenizer
 
 trust_remote_code: true
 
@@ -11,13 +8,14 @@ load_in_8bit: false
 load_in_4bit: false
 
 datasets:
-  - path: data/axolotl/en-IN_Sarcasm_Reddit.jsonl
+  - path: data/axolotl/en-AU_Sarcasm_Google.jsonl
     type: chat_template
     chat_template: tokenizer_default
+    roles_to_train: ["user", "assistant"]
 
 dataset_prepared_path: last_run_prepared
 val_set_size: 0
-output_dir: /scratch/users/k24053411/axolotl/mistral-in-reddit-sarcasm
+output_dir: /scratch/users/k24053411/axolotl/qwen/en-AU_Sarcasm_Google_adapter
 
 model_config:
   output_router_logits: true
@@ -45,7 +43,7 @@ micro_batch_size: 1
 num_epochs: 5
 optimizer: adamw_torch
 lr_scheduler: cosine
-learning_rate: 0.00001
+learning_rate: 0.0002
 
 bf16: true
 tf32: false

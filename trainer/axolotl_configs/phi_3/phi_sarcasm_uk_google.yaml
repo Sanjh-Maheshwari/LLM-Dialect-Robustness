@@ -1,23 +1,26 @@
-base_model: google/gemma-2-9b-it
-# optionally might have model_type or tokenizer_type
+base_model: microsoft/Phi-3-medium-4k-instruct
 model_type: AutoModelForCausalLM
 tokenizer_type: AutoTokenizer
+trust_remote_code: true
 
 load_in_8bit: false
 load_in_4bit: false
 
-chat_template: gemma
-eot_tokens:
-  - <end_of_turn>
+chat_template: phi_3
+
+special_tokens:
+  eos_token: "<|end|>"
+
 datasets:
-  - path: data/axolotl/en-AU_Sarcasm_Reddit.jsonl
+  - path: data/axolotl/en-UK_Sarcasm_Google.jsonl
     type: chat_template
-    roles_to_train: ["user", "assistant"] 
+    # chat_template: phi_3
+    roles_to_train: ["user", "assistant"]
+    train_on_eos: all
 
 dataset_prepared_path: last_run_prepared
 val_set_size: 0
-output_dir: /scratch/users/k24053411/axolotl/gemma/en-AU_Reddit_Sarcasm_adapter
-resume_from_checkpoint:
+output_dir: /scratch/users/k24053411/axolotl/phi_3/en-UK_Sarcasm_Google_adapter
 
 model_config:
   output_router_logits: true
@@ -51,16 +54,22 @@ bf16: true
 tf32: false
 
 gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: True
+resume_from_checkpoint:
 logging_steps: 10
 flash_attention: false
 
-loss_watchdog_threshold: 10.0
+loss_watchdog_threshold: 5.0
 loss_watchdog_patience: 3
 
-warmup_ratio: 0.1
+warmup_ratio: 0.03
 evals_per_epoch: 1
 saves_per_epoch: 1
 save_optimizer_states: false
 
+deepspeed: configs/zero2.json
+
 weight_decay: 0.0
+
 save_first_step: false  # uncomment this to validate checkpoint saving works with your config
