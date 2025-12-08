@@ -30,7 +30,7 @@ datasets:
 
 dataset_prepared_path: last_run_prepared
 val_set_size: 0
-output_dir:
+output_dir: /scratch/users/k24053411/axolotl/phi_3/baseline/en_Sarcasm_Google_adapter
 
 model_config:
   output_router_logits: true
@@ -66,7 +66,7 @@ tf32: false
 gradient_checkpointing: true
 gradient_checkpointing_kwargs:
   use_reentrant: True
-resume_from_checkpoint:
+resume_from_checkpoint: /scratch/users/k24053411/axolotl/phi_3/baseline/en_Sarcasm_Google_adapter/checkpoint-1257
 logging_steps: 10
 flash_attention: false
 

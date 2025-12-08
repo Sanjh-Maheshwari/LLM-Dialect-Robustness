@@ -13,6 +13,7 @@ load_in_4bit: false
 datasets:
   - path: data/axolotl/en-IN_Sarcasm_Google.jsonl
     type: chat_template
+    roles_to_train: ["user", "assistant"] 
     chat_template: tokenizer_default
 
 dataset_prepared_path: last_run_prepared

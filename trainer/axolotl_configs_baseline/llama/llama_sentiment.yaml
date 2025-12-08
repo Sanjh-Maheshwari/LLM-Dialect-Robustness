@@ -1,9 +1,6 @@
-base_model: mistralai/Mistral-Small-Instruct-2409
-# optionally might have model_type or tokenizer_type
-model_type: AutoModelForCausalLM
-tokenizer_type: LlamaTokenizer
-# Automatically upload checkpoint and final model to HF
-# hub_model_id: username/custom_model_name
+base_model: meta-llama/Llama-3.1-8B-Instruct
+model_type: LlamaForCausalLM
+tokenizer_type: AutoTokenizer
 
 trust_remote_code: true
 
@@ -11,14 +8,22 @@ load_in_8bit: false
 load_in_4bit: false
 
 datasets:
-  - path: data/axolotl/en-UK_Sarcasm_Google.jsonl
+  - path: data/axolotl/en-AU_Sentiment_Reddit.jsonl
     type: chat_template
     roles_to_train: ["user", "assistant"] 
-    chat_template: tokenizer_default
+    train_on_eos: all
+  - path: data/axolotl/en-IN_Sentiment_Reddit.jsonl
+    type: chat_template
+    roles_to_train: ["user", "assistant"] 
+    train_on_eos: all
+  - path: data/axolotl/en-UK_Sentiment_Reddit.jsonl
+    type: chat_template
+    roles_to_train: ["user", "assistant"] 
+    train_on_eos: all
 
 dataset_prepared_path: last_run_prepared
 val_set_size: 0
-output_dir: /scratch/users/k24053411/axolotl/mistral-uk-google-sarcasm
+output_dir: /scratch/users/k24053411/axolotl/llama/baseline/en_Sentiment_Reddit_adapter
 
 model_config:
   output_router_logits: true
@@ -46,13 +51,13 @@ micro_batch_size: 1
 num_epochs: 5
 optimizer: adamw_torch
 lr_scheduler: cosine
-learning_rate: 0.00001
+learning_rate: 2e-5
 
 bf16: true
 tf32: false
 
 gradient_checkpointing: true
-resume_from_checkpoint:
+resume_from_checkpoint: /scratch/users/k24053411/axolotl/llama/baseline/en_Sentiment_Reddit_adapter/checkpoint-848
 logging_steps: 10
 flash_attention: false
 
@@ -64,7 +69,9 @@ evals_per_epoch: 1
 saves_per_epoch: 1
 save_optimizer_states: false
 
-deepspeed: configs/zero2.json
+# deepspeed: configs/zero2.json
 
 weight_decay: 0.0
+special_tokens:
+  pad_token: <|end_of_text|>
 save_first_step: false  # uncomment this to validate checkpoint saving works with your config

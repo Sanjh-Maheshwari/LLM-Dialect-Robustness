@@ -11,11 +11,11 @@ echo "Starting sequential training for model: ${MODEL_NAME}"
 echo "================================================"
 
 for dialect in "${DIALECTS[@]}"; do
-    CONFIG_FILE="${CONFIG_DIR}/${MODEL_NAME}_sarcasm_${dialect}_google.yaml"
-    
-    if [ ! -f "$CONFIG_FILE" ]; then
-        echo "ERROR: Config file not found: $CONFIG_FILE"
-        continue
+
+    if [ "$MODEL_NAME" = "mistral_7b" ]; then
+        CONFIG_FILE="${CONFIG_DIR}/mistral_sarcasm_${dialect}_google.yaml"
+    else
+        CONFIG_FILE="${CONFIG_DIR}/${MODEL_NAME}_sarcasm_${dialect}_google.yaml"
     fi
     
     echo ""

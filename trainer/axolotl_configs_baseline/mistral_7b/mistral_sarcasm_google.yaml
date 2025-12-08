@@ -26,7 +26,7 @@ datasets:
 
 dataset_prepared_path: last_run_prepared
 val_set_size: 0
-output_dir: /scratch/users/k24053411/axolotl/mistral7b/en_Sarcasm_Google_adapter
+output_dir: /scratch/users/k24053411/axolotl/mistral7b/baseline/en_Sarcasm_Google_adapter
 
 model_config:
   output_router_logits: true

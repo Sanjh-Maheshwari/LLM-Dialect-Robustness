@@ -14,6 +14,8 @@ for variant in "${VARIANTS[@]}"; do
     # Handle naming convention for different models
     if [ "$MODEL_NAME" = "phi_3" ]; then
         CONFIG_FILE="${CONFIG_DIR}/phi_${variant}.yaml"
+    elif [ "$MODEL_NAME" = "mistral_7b" ]; then
+        CONFIG_FILE="${CONFIG_DIR}/mistral_${variant}.yaml"
     else
         CONFIG_FILE="${CONFIG_DIR}/${MODEL_NAME}_${variant}.yaml"
     fi
