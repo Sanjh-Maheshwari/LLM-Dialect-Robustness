@@ -10,7 +10,8 @@ import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score, classification_report
 from tqdm import tqdm
 
-from evaluator.llm_services.qwen_w_adapters import QwenClassifier
+# from evaluator.llm_services.qwen_w_adapters import QwenClassifier
+from evaluator.llm_services.baseline.qwen_lora_baseline import QwenClassifier
 
 warnings.filterwarnings('ignore')
 
