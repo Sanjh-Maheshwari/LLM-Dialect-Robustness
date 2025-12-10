@@ -35,12 +35,12 @@ import random
 warnings.filterwarnings('ignore')
 
 # Import model classifiers
-from evaluator_unified.llm_services.phi_unified import Phi3UnifiedClassifier
-from evaluator_unified.llm_services.mistral7b_unified import Mistral7BUnifiedClassifier
-from evaluator_unified.llm_services.mistral2409_unified import Mistral2409UnifiedClassifier
-from evaluator_unified.llm_services.qwen_unified import QwenUnifiedClassifier
-from evaluator_unified.llm_services.llama_unified import LlamaUnifiedClassifier
-from evaluator_unified.llm_services.gemma2_unified import Gemma2UnifiedClassifier
+from llm_services.phi_unified import Phi3UnifiedClassifier
+from llm_services.mistral7b_unified import Mistral7BUnifiedClassifier
+from llm_services.mistral2409_unified import Mistral2409UnifiedClassifier
+from llm_services.qwen_unified import QwenUnifiedClassifier
+from llm_services.llama_unified import LlamaUnifiedClassifier
+from llm_services.gemma2_unified import Gemma2UnifiedClassifier
 
 # Constants
 VARIETIES = ["en-AU", "en-IN", "en-UK"]
@@ -137,6 +137,7 @@ def sample_fewshot_examples(dialect_df, current_idx, num_shots=NUM_SHOTS):
         # If not enough examples, use what we have
         sampled_indices = available_indices
     else:
+        random.seed(42 + current_idx) # To ensure same samples are provided to each model
         sampled_indices = random.sample(available_indices, num_shots)
 
     # Extract examples

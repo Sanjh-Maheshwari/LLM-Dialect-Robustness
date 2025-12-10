@@ -19,8 +19,8 @@ import json
 import os
 
 # All available models and methods
-ALL_MODELS = ["phi", "mistral7b", "mistral2409", "qwen", "llama", "gemma2"]
-ALL_METHODS = ["lora_grouping", "cat", "ties"]
+ALL_MODELS = ["phi", "mistral7b", "qwen", "llama", "gemma2"]
+ALL_METHODS = ["lora_grouping", "cat", "ties", "base_instruct", "individual_dialect"]
 
 def run_evaluation(model, method, output_dir="results_besstie_unified"):
     """Run a single evaluation"""
@@ -30,7 +30,7 @@ def run_evaluation(model, method, output_dir="results_besstie_unified"):
 
     cmd = [
         "python",
-        "evaluator_unified/evaluate_merge_methods.py",
+        "evaluator_unified/evaluate_merge_methods_fewshot.py",
         "--model", model,
         "--method", method,
         "--output-dir", output_dir
@@ -127,7 +127,7 @@ def main():
     parser.add_argument(
         "--output-dir",
         type=str,
-        default="results_besstie_unified",
+        default="results_besstie_unified/fewshot",
         help="Output directory for results"
     )
     parser.add_argument(
