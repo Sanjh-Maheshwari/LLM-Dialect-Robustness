@@ -24,6 +24,7 @@ datasets:
     chat_template: tokenizer_default
     roles_to_train: ["user", "assistant"]
 
+dataset_exact_deduplication: true
 dataset_prepared_path: last_run_prepared
 val_set_size: 0
 output_dir: /scratch/users/k24053411/axolotl/mistral7b/baseline/en_Sentiment_Reddit_adapter
@@ -59,7 +60,7 @@ learning_rate: 0.00001
 bf16: true
 tf32: false
 
-gradient_checkpointing: true
+gradient_checkpointing: false
 resume_from_checkpoint:
 logging_steps: 10
 flash_attention: false
@@ -72,7 +73,7 @@ evals_per_epoch: 1
 saves_per_epoch: 1
 save_optimizer_states: false
 
-deepspeed: configs/zero2.json
+# deepspeed: configs/zero2.json
 
 weight_decay: 0.0
 save_first_step: false  # uncomment this to validate checkpoint saving works with your config
