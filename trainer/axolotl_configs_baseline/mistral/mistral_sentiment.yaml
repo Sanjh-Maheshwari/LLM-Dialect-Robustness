@@ -14,12 +14,15 @@ datasets:
   - path: data/axolotl/en-AU_Sentiment_Reddit.jsonl
     type: chat_template
     chat_template: tokenizer_default
+    roles_to_train: ["user", "assistant"]
   - path: data/axolotl/en-IN_Sentiment_Reddit.jsonl
     type: chat_template
     chat_template: tokenizer_default
+    roles_to_train: ["user", "assistant"]
   - path: data/axolotl/en-UK_Sentiment_Reddit.jsonl
     type: chat_template
     chat_template: tokenizer_default
+    roles_to_train: ["user", "assistant"]
 
 dataset_prepared_path: last_run_prepared
 val_set_size: 0

@@ -10,12 +10,12 @@ import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score, classification_report
 from tqdm import tqdm
 
-from evaluator.llm_services.mistral_moe import MistralClassifier
+from evaluator.llm_services.mistral_moe_large import MistralClassifier
 
 warnings.filterwarnings('ignore')
 
 VARIETIES = ["en-AU", "en-IN", "en-UK"]
-TASKS = ["Sarcasm"]
+TASKS = ["Sentiment", "Sarcasm"]
 DOMAINS = ["Reddit"]
 
 TEST_DATA_PATH = "data/instruction/besstie/test.json"

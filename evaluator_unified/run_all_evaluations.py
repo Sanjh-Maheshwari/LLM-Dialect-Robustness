@@ -22,7 +22,6 @@ import os
 ALL_MODELS = ["phi", "mistral7b", "mistral2409", "qwen", "llama", "gemma2"]
 ALL_METHODS = ["lora_grouping", "cat", "ties"]
 
-
 def run_evaluation(model, method, output_dir="results_besstie_unified"):
     """Run a single evaluation"""
     print(f"\n{'='*80}")

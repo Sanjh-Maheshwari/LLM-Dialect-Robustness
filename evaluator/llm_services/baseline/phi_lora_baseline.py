@@ -83,10 +83,6 @@ class Phi3Classifier:
 
     def load_merged_dialect_adapter(self, task: str, domain: str):
 
-        adapters = []
-        weights = [0.33, 0.33, 0.33]
-        density = 0.2
-        combination_type = "ties"
         adapter_name = f"merge_{task}_{domain}"
         self.current_task = f"{task}_{domain}"
 

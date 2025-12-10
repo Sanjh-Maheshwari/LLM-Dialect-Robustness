@@ -14,7 +14,7 @@ warnings.filterwarnings('ignore')
 
 # Adapter directories
 DIALECT_ADAPTER_DIR = "/scratch/users/k24053411/axolotl/mistral7b"
-BASELINE_ADAPTER_DIR = "/scratch/users/k24053411/axolotl/mistral_7b/baseline"
+BASELINE_ADAPTER_DIR = "/scratch/users/k24053411/axolotl/mistral7b/baseline"
 
 
 class ChatMLStoppingCriteria(StoppingCriteria):

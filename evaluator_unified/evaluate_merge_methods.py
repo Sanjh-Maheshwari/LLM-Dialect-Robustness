@@ -22,12 +22,12 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Import model classifiers
-from evaluator_unified.llm_services.phi_unified import Phi3UnifiedClassifier
-from evaluator_unified.llm_services.mistral7b_unified import Mistral7BUnifiedClassifier
-from evaluator_unified.llm_services.mistral2409_unified import Mistral2409UnifiedClassifier
-from evaluator_unified.llm_services.qwen_unified import QwenUnifiedClassifier
-from evaluator_unified.llm_services.llama_unified import LlamaUnifiedClassifier
-from evaluator_unified.llm_services.gemma2_unified import Gemma2UnifiedClassifier
+from llm_services.phi_unified import Phi3UnifiedClassifier
+from llm_services.mistral7b_unified import Mistral7BUnifiedClassifier
+from llm_services.mistral2409_unified import Mistral2409UnifiedClassifier
+from llm_services.qwen_unified import QwenUnifiedClassifier
+from llm_services.llama_unified import LlamaUnifiedClassifier
+from llm_services.gemma2_unified import Gemma2UnifiedClassifier
 
 # Constants
 VARIETIES = ["en-AU", "en-IN", "en-UK"]

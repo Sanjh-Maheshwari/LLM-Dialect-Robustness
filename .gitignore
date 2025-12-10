@@ -210,3 +210,4 @@ __marimo__/
 *.jsonl
 
 last_run_prepared/
+results*/

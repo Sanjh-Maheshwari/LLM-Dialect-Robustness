@@ -21,6 +21,7 @@ datasets:
     roles_to_train: ["user", "assistant"]
 
 dataset_prepared_path: last_run_prepared
+dataset_exact_deduplication: true
 val_set_size: 0
 output_dir: /scratch/users/k24053411/axolotl/gemma/baseline/en_Reddit_Sentiment_adapter
 resume_from_checkpoint:
@@ -67,6 +68,8 @@ warmup_ratio: 0.1
 evals_per_epoch: 1
 saves_per_epoch: 1
 save_optimizer_states: false
+
+# deepspeed: configs/zero2.json
 
 weight_decay: 0.0
 save_first_step: false  # uncomment this to validate checkpoint saving works with your config
