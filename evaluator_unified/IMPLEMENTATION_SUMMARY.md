@@ -1,4 +1,4 @@
-# Implementation Summary
+j# Implementation Summary
 
 ## Overview
 
@@ -9,6 +9,7 @@ A minimal and efficient unified evaluation pipeline for testing LoRA adapter mer
 ### ✅ Core Components (12 files)
 
 #### 1. Unified Model Services (6 files)
+
 Location: `evaluator_unified/llm_services/`
 
 - **`phi_unified.py`** - Phi-3 unified classifier (~230 lines)
@@ -19,6 +20,7 @@ Location: `evaluator_unified/llm_services/`
 - **`gemma2_unified.py`** - Gemma-2 unified classifier (~220 lines)
 
 **Key Features:**
+
 - Single class per model handles all 3 methods
 - Caches loaded adapters to avoid reloading
 - Supports switching between methods dynamically
@@ -27,6 +29,7 @@ Location: `evaluator_unified/llm_services/`
 #### 2. Evaluation Scripts (2 files)
 
 - **`evaluate_merge_methods.py`** (~250 lines)
+
   - Single evaluation script for any model + method combination
   - Command-line interface with argparse
   - Progress tracking with tqdm
@@ -54,27 +57,42 @@ Location: `evaluator_unified/llm_services/`
 Instead of creating separate services for each method, each model has ONE unified service that can switch between methods:
 
 ```python
-# Before (would need 3 separate services per model)
+# Before (would need 5 separate services per model)
+from phi_base_instruct import PhiClassifier
 from phi_lora_grouping import PhiClassifier
+from phi_individual_dialect import PhiClassifier
 from phi_cat import PhiClassifier
 from phi_ties import PhiClassifier
 
 # After (single unified service)
 from phi_unified import Phi3UnifiedClassifier
 model = Phi3UnifiedClassifier()
+model.load_adapter(task, domain, method="base_instruct")
 model.load_adapter(task, domain, method="lora_grouping")
+model.load_adapter(task, domain, method="individual_dialect", dialect="en-AU")
 model.load_adapter(task, domain, method="cat")
 model.load_adapter(task, domain, method="ties")
 ```
 
 **Benefits:**
-- Reduced code duplication (18 scripts → 8 scripts)
+
+- Reduced code duplication (30 scripts → 8 scripts)
 - Easier maintenance
 - Consistent behavior across methods
+- Easy to add new evaluation methods
 
 ### 2. Method Implementation
 
+#### Base Instruct (No Adapter)
+
+```python
+# Use the base instruct model without any adapter
+# This provides a baseline for comparison
+model = base_model  # No adapter loading
+```
+
 #### LoRA Grouping
+
 ```python
 # Load single baseline adapter trained on all dialects
 adapter_path = f"{BASELINE_DIR}/en_{task}_{domain}_adapter"
@@ -82,7 +100,19 @@ model = PeftModel.from_pretrained(base_model, adapter_path)
 # No merging needed!
 ```
 
+#### Individual Dialect
+
+```python
+# Load only the specific dialect adapter for each evaluation
+# For en-AU data: load en-AU adapter
+# For en-IN data: load en-IN adapter
+# For en-UK data: load en-UK adapter
+adapter_path = f"{DIALECT_DIR}/{dialect}_{task}_{domain}_adapter"
+model = PeftModel.from_pretrained(base_model, adapter_path)
+```
+
 #### CAT (Concatenation)
+
 ```python
 # Load 3 dialect adapters
 for dialect in ["en-AU", "en-IN", "en-UK"]:
@@ -97,6 +127,7 @@ model.add_weighted_adapter(
 ```
 
 #### TIES (Task Arithmetic)
+
 ```python
 # Load 3 dialect adapters (same as CAT)
 for dialect in ["en-AU", "en-IN", "en-UK"]:
@@ -129,9 +160,9 @@ Structured JSON with complete metadata:
   "results": {
     "Sarcasm": {
       "Reddit": {
-        "en-AU": {"acc": 0.85, "f1": 0.84},
-        "en-IN": {"acc": 0.82, "f1": 0.81},
-        "en-UK": {"acc": 0.87, "f1": 0.86}
+        "en-AU": { "acc": 0.85, "f1": 0.84 },
+        "en-IN": { "acc": 0.82, "f1": 0.81 },
+        "en-UK": { "acc": 0.87, "f1": 0.86 }
       }
     }
   },
@@ -144,26 +175,29 @@ Structured JSON with complete metadata:
 
 ## Code Statistics
 
-| Component | Files | Lines of Code | Purpose |
-|-----------|-------|---------------|---------|
-| Model Services | 6 | ~1,320 | Unified classifiers for each model |
-| Evaluation Scripts | 2 | ~450 | Single + batch evaluation |
-| Documentation | 4 | ~600 | Usage guides and examples |
-| **Total** | **12** | **~2,370** | Complete pipeline |
+| Component          | Files  | Lines of Code | Purpose                            |
+| ------------------ | ------ | ------------- | ---------------------------------- |
+| Model Services     | 6      | ~1,320        | Unified classifiers for each model |
+| Evaluation Scripts | 2      | ~450          | Single + batch evaluation          |
+| Documentation      | 4      | ~600          | Usage guides and examples          |
+| **Total**          | **12** | **~2,370**    | Complete pipeline                  |
 
 ## Key Advantages
 
 ### ✅ Minimal Code
+
 - Only ~2,370 lines total
 - No duplicate evaluation logic
 - Reuses existing patterns from your codebase
 
 ### ✅ Efficient Execution
+
 - Single script handles all methods
 - Adapter caching prevents reloading
 - Memory management between evaluations
 
 ### ✅ Easy to Use
+
 ```bash
 # Single evaluation
 python evaluator_unified/evaluate_merge_methods.py --model phi --method cat
@@ -173,12 +207,14 @@ python evaluator_unified/run_all_evaluations.py
 ```
 
 ### ✅ Comprehensive Results
+
 - Structured JSON output
 - Metadata for reproducibility
 - Automatic aggregation
 - Summary statistics
 
 ### ✅ Flexible
+
 - Run single evaluation or batch
 - Select specific models/methods
 - Custom output directories
@@ -186,18 +222,19 @@ python evaluator_unified/run_all_evaluations.py
 
 ## Evaluation Matrix
 
-Total evaluations: **18** (6 models × 3 methods)
+Total evaluations: **30** (6 models × 5 methods)
 
-| Model | LoRA Grouping | CAT | TIES |
-|-------|---------------|-----|------|
-| Phi-3 | ✓ | ✓ | ✓ |
-| Mistral 7B | ✓ | ✓ | ✓ |
-| Mistral 2409 | ✓ | ✓ | ✓ |
-| Qwen | ✓ | ✓ | ✓ |
-| LLaMA | ✓ | ✓ | ✓ |
-| Gemma 2 | ✓ | ✓ | ✓ |
+| Model        | Base Instruct | LoRA Grouping | Individual Dialect | CAT | TIES |
+| ------------ | ------------- | ------------- | ------------------ | --- | ---- |
+| Phi-3        | ✓             | ✓             | ✓                  | ✓   | ✓    |
+| Mistral 7B   | ✓             | ✓             | ✓                  | ✓   | ✓    |
+| Mistral 2409 | ✓             | ✓             | ✓                  | ✓   | ✓    |
+| Qwen         | ✓             | ✓             | ✓                  | ✓   | ✓    |
+| LLaMA        | ✓             | ✓             | ✓                  | ✓   | ✓    |
+| Gemma 2      | ✓             | ✓             | ✓                  | ✓   | ✓    |
 
 Each evaluation tests on:
+
 - 3 dialects (en-AU, en-IN, en-UK)
 - 2 tasks (Sarcasm, Sentiment)
 - 1 domain (Reddit)
@@ -205,12 +242,14 @@ Each evaluation tests on:
 ## Comparison with Original Plan
 
 ### Original Estimate
+
 - 6 model services × ~150 lines = 900 lines
 - 1 evaluation script × 200 lines = 200 lines
 - 1 batch runner × 50 lines = 50 lines
 - **Total: ~1,150 lines**
 
 ### Actual Implementation
+
 - 6 model services × ~220 lines = 1,320 lines (more robust)
 - 1 evaluation script × 250 lines = 250 lines (more features)
 - 1 batch runner × 200 lines = 200 lines (better error handling)
@@ -218,6 +257,7 @@ Each evaluation tests on:
 - **Total: ~2,370 lines**
 
 The actual implementation is more comprehensive than planned, with:
+
 - Better error handling
 - More detailed logging
 - Complete documentation
@@ -226,19 +266,29 @@ The actual implementation is more comprehensive than planned, with:
 ## Usage Summary
 
 ### Quick Start
+
 ```bash
 # Run single evaluation
-python evaluator_unified/evaluate_merge_methods.py --model phi --method lora_grouping
+python evaluator_unified/evaluate_merge_methods_fewshot.py --model phi --method lora_grouping
+
+# Run with base instruct model (no adapter)
+python evaluator_unified/evaluate_merge_methods_fewshot.py --model phi --method base_instruct
+
+# Run with individual dialect adapters
+python evaluator_unified/evaluate_merge_methods_fewshot.py --model phi --method individual_dialect
 
 # Run all evaluations
 bash evaluator_unified/run_all.sh
 ```
 
 ### Output Location
+
 ```
-results_besstie_unified/
+results_besstie_unified_fewshot/
 ├── phi/
+│   ├── base_instruct/results.json
 │   ├── lora_grouping/results.json
+│   ├── individual_dialect/results.json
 │   ├── cat/results.json
 │   └── ties/results.json
 ├── mistral7b/...
@@ -254,17 +304,30 @@ results_besstie_unified/
 To run the evaluations:
 
 1. **Verify adapter paths exist:**
+
    ```bash
    ls /scratch/users/k24053411/axolotl/phi_3/
    ls /scratch/users/k24053411/axolotl/phi_3/baseline/
    ```
 
 2. **Test single evaluation:**
+
    ```bash
-   python evaluator_unified/evaluate_merge_methods.py --model phi --method lora_grouping
+   python evaluator_unified/evaluate_merge_methods_fewshot.py --model phi --method lora_grouping
    ```
 
-3. **Run all evaluations:**
+3. **Test new methods:**
+
+   ```bash
+   # Test base instruct (no adapter)
+   python evaluator_unified/evaluate_merge_methods_fewshot.py --model phi --method base_instruct
+
+   # Test individual dialect adapters
+   python evaluator_unified/evaluate_merge_methods_fewshot.py --model phi --method individual_dialect
+   ```
+
+4. **Run all evaluations:**
+
    ```bash
    python evaluator_unified/run_all_evaluations.py
    ```
