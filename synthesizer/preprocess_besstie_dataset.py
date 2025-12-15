@@ -176,7 +176,7 @@ def prepare_dataset(
     
     for variety in VARIETIES:
         for task in TASKS:
-            domains = DOMAINS if task == "Sarcasm" else ["Reddit"]
+            domains = DOMAINS
             
             for domain in domains:
                 logger.info(f"{'='*60}")
@@ -232,7 +232,7 @@ def prepare_dataset(
 def main():
     
     prepare_dataset(
-        besstie_json_path="data/instruction/besstie.json",
+        besstie_json_path="data/instruction/besstie/train.json",
         output_dir="data/axolotl",
         augment=True,
         finetome_samples=2000,

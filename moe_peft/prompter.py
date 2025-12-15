@@ -128,6 +128,57 @@ class Prompter:
                     messages, add_generation_prompt=True, tokenize=False,
                 )
 
+        elif isinstance(self.template, str) and self.template == "qwen": 
+
+            if input:
+                user_input = f"{instruction}\n{input}"
+            else:
+                user_input = instruction
+
+            tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-7B-Instruct")
+
+            if label:
+                messages = [
+                    {"role": "system", "content": "You are Qwen, created by Alibaba Cloud. You are a helpful assistant."},
+                    {"role": "user", "content": user_input},
+                    {"role": "assistant", "content": label},
+                ]
+                res = tokenizer.apply_chat_template(
+                    messages, add_generation_prompt=False, tokenize=False,
+                )
+            else:
+                messages = [
+                    {"role": "user", "content": user_input},
+                ]
+                res = tokenizer.apply_chat_template(
+                    messages, add_generation_prompt=True, tokenize=False,
+                )
+
+        elif isinstance(self.template, str) and self.template == "llama": 
+
+            if input:
+                user_input = f"{instruction}\n{input}"
+            else:
+                user_input = instruction
+
+            tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3.1-8B-Instruct")
+
+            if label:
+                messages = [
+                    {"role": "user", "content": user_input},
+                    {"role": "assistant", "content": label},
+                ]
+                res = tokenizer.apply_chat_template(
+                    messages, add_generation_prompt=False, tokenize=False,
+                )
+            else:
+                messages = [
+                    {"role": "user", "content": user_input},
+                ]
+                res = tokenizer.apply_chat_template(
+                    messages, add_generation_prompt=True, tokenize=False,
+                )
+
         else:
             if input:
                 res = self.template["prompt_input"].format(
@@ -139,7 +190,7 @@ class Prompter:
             if label:
                 res = f"{res}{label}\n"
         
-        print(res)
+        # print(res)
 
         return res
 
@@ -161,6 +212,15 @@ class Prompter:
                     return output.split("<|assistant|>")[-1].strip()
                 return output.strip()
             
+            elif self.template == "qwen":
+                if "<|im_start|>assistant\n" in output:
+                    return output.split("<|im_start|>assistant\n")[-1].strip()
+                return output.strip()
+            
+            elif self.template == "llama":
+                if "<|start_header_id|>assistant<|end_header_id|>\n\n" in output:
+                    return output.split("<|start_header_id|>assistant<|end_header_id|>\n\n")[-1].strip()
+                return output.strip()
 
             else:
                 logger.warning(f"Unknown template type: {self.template}, returning output as-is")

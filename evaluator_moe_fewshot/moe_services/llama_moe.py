@@ -10,7 +10,7 @@ warnings.filterwarnings('ignore')
 class LlamaMOEClassifier:
     """Llama MOE classifier with few-shot support"""
 
-    def __init__(self, model_id="meta-llama/Llama-3.2-3B-Instruct", lora_path="/scratch/users/k24053411/"):
+    def __init__(self, model_id="meta-llama/Llama-3.1-8B-Instruct", lora_path="/scratch/users/k24053411/mixlora/llama"):
         logger.info(f"Loading {model_id} with MoE-PEFT")
 
         try:
@@ -26,7 +26,7 @@ class LlamaMOEClassifier:
             self.lora_path = lora_path
             self.generation_config = moe_peft.GenerateConfig(
                 adapter_name="default",
-                prompt_template="alpaca",
+                prompt_template="llama",
             )
 
             logger.info(f"Llama MOE model loaded successfully with MoE-PEFT")
@@ -101,8 +101,6 @@ class LlamaMOEClassifier:
 
         self.model.unload_adapter("default")
 
-        logger.debug(f"Response: {response_text}")
-
         # Extract numeric label
         for char in response_text:
             if char in ['0', '1']:
@@ -151,7 +149,7 @@ class LlamaMOEClassifier:
             # Unload adapter to free memory
             self.model.unload_adapter("default")
 
-            logger.debug(f"Few-shot response: {response_text}")
+            # logger.debug(f"Few-shot response: {response_text}")
 
             # Extract numeric label
             for char in response_text:

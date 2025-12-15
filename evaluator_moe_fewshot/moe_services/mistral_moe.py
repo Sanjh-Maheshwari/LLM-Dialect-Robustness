@@ -10,7 +10,7 @@ warnings.filterwarnings('ignore')
 class MistralMOEClassifier:
     """Mistral MOE classifier with few-shot support"""
 
-    def __init__(self, model_id="mistralai/Mistral-Small-Instruct-2409", lora_path="/scratch/users/k24053411/"):
+    def __init__(self, model_id="mistralai/Mistral-7B-Instruct-v0.1", lora_path="/scratch/users/k24053411/mixlora/mistral7b"):
         logger.info(f"Loading {model_id} with MoE-PEFT")
 
         try:
@@ -96,12 +96,10 @@ class MistralMOEClassifier:
 
         response_text = self.evaluate(
             instruction=instruction,
-            input=context,
+            input="",
         )
 
         self.model.unload_adapter("default")
-
-        logger.debug(f"Response: {response_text}")
 
         # Extract numeric label
         for char in response_text:
@@ -151,7 +149,7 @@ class MistralMOEClassifier:
             # Unload adapter to free memory
             self.model.unload_adapter("default")
 
-            logger.debug(f"Few-shot response: {response_text}")
+            # logger.debug(f"Few-shot response: {response_text}")
 
             # Extract numeric label
             for char in response_text:

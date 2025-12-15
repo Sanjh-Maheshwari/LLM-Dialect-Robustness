@@ -10,7 +10,7 @@ warnings.filterwarnings('ignore')
 class QwenMOEClassifier:
     """Qwen MOE classifier with few-shot support"""
 
-    def __init__(self, model_id="Qwen/Qwen2.5-7B-Instruct", lora_path="/scratch/users/k24053411/"):
+    def __init__(self, model_id="Qwen/Qwen2.5-7B-Instruct", lora_path="/scratch/users/k24053411/mixlora/qwen"):
         logger.info(f"Loading {model_id} with MoE-PEFT")
 
         try:
@@ -26,7 +26,7 @@ class QwenMOEClassifier:
             self.lora_path = lora_path
             self.generation_config = moe_peft.GenerateConfig(
                 adapter_name="default",
-                prompt_template="alpaca",
+                prompt_template="qwen",
             )
 
             logger.info(f"Qwen MOE model loaded successfully with MoE-PEFT")
@@ -96,7 +96,7 @@ class QwenMOEClassifier:
 
         response_text = self.evaluate(
             instruction=instruction,
-            input=context,
+            input="",
         )
 
         self.model.unload_adapter("default")
@@ -151,7 +151,7 @@ class QwenMOEClassifier:
             # Unload adapter to free memory
             self.model.unload_adapter("default")
 
-            logger.debug(f"Few-shot response: {response_text}")
+            # logger.debug(f"Few-shot response: {response_text}")
 
             # Extract numeric label
             for char in response_text:

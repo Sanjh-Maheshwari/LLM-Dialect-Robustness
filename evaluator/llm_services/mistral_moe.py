@@ -14,7 +14,7 @@ warnings.filterwarnings('ignore')
 
 class MistralClassifier:
     
-    def __init__(self, model_id="mistralai/Mistral-7B-Instruct-v0.1", lora_path = "/scratch/users/k24053411/"):
+    def __init__(self, model_id="mistralai/Mistral-7B-Instruct-v0.1", lora_path = "/scratch/users/k24053411/mixlora/mistral"):
         
         logger.info(f"Loading {model_id}")
         try:

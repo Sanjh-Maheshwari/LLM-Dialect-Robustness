@@ -97,7 +97,7 @@ def evaluate_dialect(model, variety, task, domain, json_path):
 
     true_labels = dialect_df['response'].tolist()
     accuracy = accuracy_score(true_labels, predictions)
-    f1 = f1_score(true_labels, predictions, average='weighted', zero_division=0)
+    f1 = f1_score(true_labels, predictions, average='macro', zero_division=0)
 
     logger.info(f"Accuracy: {accuracy:.4f}, F1: {f1:.4f}")
 

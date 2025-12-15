@@ -10,7 +10,7 @@ warnings.filterwarnings('ignore')
 class PhiMOEClassifier:
     """Phi MOE classifier with few-shot support"""
 
-    def __init__(self, model_id="microsoft/Phi-3.5-mini-instruct", lora_path="/scratch/users/k24053411/"):
+    def __init__(self, model_id="microsoft/Phi-3-medium-4k-instruct", lora_path="/scratch/users/k24053411/mixlora/phi"):
         logger.info(f"Loading {model_id} with MoE-PEFT")
 
         try:
@@ -26,7 +26,8 @@ class PhiMOEClassifier:
             self.lora_path = lora_path
             self.generation_config = moe_peft.GenerateConfig(
                 adapter_name="default",
-                prompt_template="alpaca",
+                prompt_template="phi",
+                stop_token="<|end|>"
             )
 
             logger.info(f"Phi MOE model loaded successfully with MoE-PEFT")

@@ -56,7 +56,7 @@ class Mistral2409UnifiedClassifier:
                 model_id,
                 torch_dtype=torch.bfloat16,
                 device_map="auto",
-                low_cpu_mem_usage=True
+                low_cpu_mem_usage=False
             )
 
             # Initialize with base model
@@ -248,7 +248,7 @@ class Mistral2409UnifiedClassifier:
                 outputs = self.model.generate(
                     **inputs,
                     do_sample=True,
-                    temperature=0.1,
+                    temperature=0.0,
                     max_new_tokens=max_new_tokens,
                     pad_token_id=self.tokenizer.pad_token_id,
                     eos_token_id=self.tokenizer.eos_token_id,
@@ -315,7 +315,7 @@ class Mistral2409UnifiedClassifier:
                 outputs = self.model.generate(
                     **inputs,
                     do_sample=True,
-                    temperature=0.1,
+                    temperature=0.0,
                     max_new_tokens=max_new_tokens,
                     pad_token_id=self.tokenizer.pad_token_id,
                     eos_token_id=self.tokenizer.eos_token_id,

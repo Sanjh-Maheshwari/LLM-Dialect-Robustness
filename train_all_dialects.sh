@@ -13,9 +13,11 @@ echo "================================================"
 for dialect in "${DIALECTS[@]}"; do
 
     if [ "$MODEL_NAME" = "mistral_7b" ]; then
-        CONFIG_FILE="${CONFIG_DIR}/mistral_sarcasm_${dialect}_google.yaml"
+        CONFIG_FILE="${CONFIG_DIR}/mistral_sentiment_${dialect}_google.yaml"
+    elif [ "$MODEL_NAME" = "phi_3" ]; then
+        CONFIG_FILE="${CONFIG_DIR}/phi_sentiment_${dialect}_google.yaml"
     else
-        CONFIG_FILE="${CONFIG_DIR}/${MODEL_NAME}_sarcasm_${dialect}_google.yaml"
+        CONFIG_FILE="${CONFIG_DIR}/${MODEL_NAME}_sentiment_${dialect}_google.yaml"
     fi
     
     echo ""

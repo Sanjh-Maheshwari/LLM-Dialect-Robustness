@@ -32,7 +32,7 @@ from llm_services.gemma2_unified import Gemma2UnifiedClassifier
 # Constants
 VARIETIES = ["en-AU", "en-IN", "en-UK"]
 TASKS = ["Sarcasm", "Sentiment"]
-DOMAINS = ["Reddit"]
+DOMAINS = ["Reddit", "Google"]
 
 TEST_DATA_PATH = "data/instruction/besstie/test.json"
 
@@ -46,7 +46,7 @@ MODEL_CLASSES = {
     "gemma2": Gemma2UnifiedClassifier,
 }
 
-VALID_METHODS = ["lora_grouping", "cat", "ties"]
+VALID_METHODS = ["lora_grouping", "cat", "ties", "base_instruct", "individual_dialect"]
 
 
 def convert_besstie_to_instruction_format(text, label, task, variety, example_id):
@@ -131,7 +131,7 @@ def evaluate_dialect(model, variety, task, domain, method, json_path):
 
     true_labels = dialect_df['response'].tolist()
     accuracy = accuracy_score(true_labels, predictions)
-    f1 = f1_score(true_labels, predictions, average='weighted', zero_division=0)
+    f1 = f1_score(true_labels, predictions, average='macro', zero_division=0)
 
     logger.info(f"Results - Accuracy: {accuracy:.4f}, F1: {f1:.4f}")
 

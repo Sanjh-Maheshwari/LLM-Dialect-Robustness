@@ -38,7 +38,7 @@ from evaluator_moe_fewshot.moe_services.llama_moe import LlamaMOEClassifier
 # Constants
 VARIETIES = ["en-AU", "en-IN", "en-UK"]
 TASKS = ["Sarcasm", "Sentiment"]
-DOMAINS = ["Reddit"]
+DOMAINS = ["Reddit", "Google"]
 NUM_SHOTS = 2  # Number of few-shot examples
 
 TEST_DATA_PATH = "data/instruction/besstie/test.json"
@@ -51,7 +51,6 @@ MODEL_CLASSES = {
     "phi": PhiMOEClassifier,
     "llama": LlamaMOEClassifier,
 }
-
 
 def convert_besstie_to_instruction_format(text, label, task, variety, example_id):
     """Convert BESSTIE classification data to instruction-following format"""
@@ -175,7 +174,7 @@ def evaluate_dialect_fewshot(model, variety, task, domain, json_path):
 
     true_labels = dialect_df['response'].tolist()
     accuracy = accuracy_score(true_labels, predictions)
-    f1 = f1_score(true_labels, predictions, average='weighted', zero_division=0)
+    f1 = f1_score(true_labels, predictions, average='macro', zero_division=0)
 
     logger.info(f"Results - Accuracy: {accuracy:.4f}, F1: {f1:.4f}")
 

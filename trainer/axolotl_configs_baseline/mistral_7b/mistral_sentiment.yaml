@@ -2,8 +2,6 @@ base_model: mistralai/Mistral-7B-Instruct-v0.1
 # optionally might have model_type or tokenizer_type
 model_type: AutoModelForCausalLM
 tokenizer_type: LlamaTokenizer
-# Automatically upload checkpoint and final model to HF
-# hub_model_id: username/custom_model_name
 
 trust_remote_code: true
 
@@ -70,7 +68,8 @@ loss_watchdog_patience: 3
 
 warmup_ratio: 0.03
 evals_per_epoch: 1
-saves_per_epoch: 1
+save_strategy: "no" 
+save_steps: 0
 save_optimizer_states: false
 
 # deepspeed: configs/zero2.json

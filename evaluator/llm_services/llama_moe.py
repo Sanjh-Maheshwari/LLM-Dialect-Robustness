@@ -5,8 +5,6 @@ import time
 from tqdm import tqdm
 from typing import List, Dict, Any
 from sklearn.metrics import accuracy_score, f1_score, classification_report
-from evaluator.llm_services.prompts import system_prompt_general, evaluation_prompt_zeroshot_alpaca, evaluation_prompt_fewshot_alpaca
-from evaluator.llm_services.utils import format_fewshot_prompt_alpaca
 import torch
 import warnings
 from loguru import logger
@@ -17,7 +15,7 @@ warnings.filterwarnings('ignore')
 class LlamaClassifier:
     """LLama model for fact checking"""
     
-    def __init__(self, model_id="meta-llama/Llama-3.1-8B", lora_path = "/scratch/users/k24053411/"):
+    def __init__(self, model_id="meta-llama/Llama-3.1-8B-Instruct", lora_path = "/scratch/users/k24053411/mixlora/llama"):
         
         logger.info(f"Loading {model_id}")
         try:
@@ -33,7 +31,7 @@ class LlamaClassifier:
             self.lora_path = lora_path
             self.generation_config = moe_peft.GenerateConfig(
                 adapter_name="default",
-                prompt_template="alpaca",
+                prompt_template="llama",
             )
 
             print(f"Llama model loaded successfully with MoE-PEFT")
@@ -95,6 +93,8 @@ class LlamaClassifier:
                                 )
             
             self.model.unload_adapter("default")
+
+            # logger.debug(response_text)
 
             for char in response_text:
                 if char in ['0', '1']:

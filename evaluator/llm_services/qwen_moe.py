@@ -5,8 +5,6 @@ import time
 from tqdm import tqdm
 from typing import List, Dict, Any
 from sklearn.metrics import accuracy_score, f1_score, classification_report
-from evaluator.llm_services.prompts import system_prompt_general, evaluation_prompt_zeroshot_alpaca, evaluation_prompt_fewshot_alpaca
-from evaluator.llm_services.utils import format_fewshot_prompt_alpaca
 import torch
 import warnings
 from loguru import logger
@@ -17,7 +15,7 @@ warnings.filterwarnings('ignore')
 class QwenClassifier:
     """LLama model for fact checking"""
     
-    def __init__(self, model_id="Qwen/Qwen2.5-7B", lora_path = "/scratch/users/k24053411/"):
+    def __init__(self, model_id="Qwen/Qwen2.5-7B-Instruct", lora_path = "/scratch/users/k24053411/mixlora/qwen"):
         
         logger.info(f"Loading {model_id}")
         try:
@@ -33,7 +31,7 @@ class QwenClassifier:
             self.lora_path = lora_path
             self.generation_config = moe_peft.GenerateConfig(
                 adapter_name="default",
-                prompt_template="alpaca",
+                prompt_template="qwen",
             )
 
             print(f"Qwen model loaded successfully with MoE-PEFT")
@@ -67,6 +65,7 @@ class QwenClassifier:
         self.generation_config.top_p = top_p
         self.generation_config.top_k = top_k
         self.generation_config.repetition_penalty = repetition_penalty
+        self.generation_config.do_sample = False
 
         generate_params = {
             "model": self.model,
@@ -96,12 +95,14 @@ class QwenClassifier:
             
             self.model.unload_adapter("default")
 
+            # logger.debug(response_text)
+
             for char in response_text:
                 if char in ['0', '1']:
                     return char
 
             response_lower = response_text.lower()
-            
+
             if any(word in response_lower for word in ['support', 'confirm', 'true', 'correct']):
                 return '0'
             elif any(word in response_lower for word in ['refute', 'contradict', 'false', 'incorrect']):
