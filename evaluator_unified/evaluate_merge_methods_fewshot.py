@@ -171,6 +171,8 @@ def evaluate_dialect_fewshot(model, variety, task, domain, method, json_path):
         # Sample few-shot examples (excluding current instance)
         few_shot_examples = sample_fewshot_examples(dialect_df, i, num_shots=NUM_SHOTS)
 
+        # print(few_shot_examples)
+
         prediction = model.predict_fewshot(
             instruction=instruction,
             context=context,
@@ -183,8 +185,12 @@ def evaluate_dialect_fewshot(model, variety, task, domain, method, json_path):
         predictions.append(prediction)
 
     true_labels = dialect_df['response'].tolist()
+
+    
+    average = "weighted"
     accuracy = accuracy_score(true_labels, predictions)
-    f1 = f1_score(true_labels, predictions, average='macro', zero_division=0)
+    logger.warning(f"Using following average for f1 : {average}")
+    f1 = f1_score(true_labels, predictions, average=average, zero_division=0)
 
     logger.info(f"Results - Accuracy: {accuracy:.4f}, F1: {f1:.4f}")
 

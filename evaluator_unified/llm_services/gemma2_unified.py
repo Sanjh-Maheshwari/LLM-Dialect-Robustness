@@ -249,7 +249,7 @@ class Gemma2UnifiedClassifier:
                 outputs = self.model.generate(
                     **inputs,
                     do_sample=True,
-                    temperature=0.0,
+                    temperature=0.1,
                     max_new_tokens=max_new_tokens,
                     pad_token_id=self.tokenizer.pad_token_id,
                     eos_token_id=self.tokenizer.eos_token_id,
@@ -316,7 +316,7 @@ class Gemma2UnifiedClassifier:
                 outputs = self.model.generate(
                     **inputs,
                     do_sample=True,
-                    temperature=0.0,
+                    temperature=0.1,
                     max_new_tokens=max_new_tokens,
                     pad_token_id=self.tokenizer.pad_token_id,
                     eos_token_id=self.tokenizer.eos_token_id,

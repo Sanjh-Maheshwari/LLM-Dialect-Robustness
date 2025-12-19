@@ -14,7 +14,7 @@ warnings.filterwarnings('ignore')
 
 class PhiClassifier:
     
-    def __init__(self, model_id="microsoft/Phi-3-medium-4k-instruct", lora_path = "/scratch/users/k24053411/"):
+    def __init__(self, model_id="microsoft/Phi-3-medium-4k-instruct", lora_path = "/scratch/users/k24053411/mixlora/phi"):
         
         logger.info(f"Loading {model_id}")
         try:
@@ -94,7 +94,7 @@ class PhiClassifier:
         
         self.model.unload_adapter("default")
 
-        logger.debug(response_text)
+        # logger.debug(response_text)
 
         for char in response_text:
             if char in ['0', '1']:

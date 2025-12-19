@@ -10,13 +10,13 @@ import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score, classification_report
 from tqdm import tqdm
 
-from evaluator.llm_services.mistral_moe import MistralClassifier
+from evaluator.llm_services.mistral_moe_large import MistralClassifier
 
 warnings.filterwarnings('ignore')
 
 VARIETIES = ["en-AU", "en-IN", "en-UK"]
-TASKS = ["Sentiment", "Sarcasm"]
-DOMAINS = ["Reddit", "Google"]
+TASKS = ["Sarcasm"]
+DOMAINS = ["Reddit"]
 
 TEST_DATA_PATH = "data/instruction/besstie/test.json"
 RESULTS_DIR = "results_besstie/v1/mistral_moe"
@@ -97,7 +97,7 @@ def evaluate_dialect(model, variety, task, domain, json_path):
 
     true_labels = dialect_df['response'].tolist()
     accuracy = accuracy_score(true_labels, predictions)
-    f1 = f1_score(true_labels, predictions, average='macro', zero_division=0)
+    f1 = f1_score(true_labels, predictions, average='weighted', zero_division=0)
 
     logger.info(f"Accuracy: {accuracy:.4f}, F1: {f1:.4f}")
 

@@ -14,7 +14,7 @@ warnings.filterwarnings('ignore')
 
 class GemmaClassifier:
     
-    def __init__(self, model_id="google/gemma-2-9b-it", lora_path = "/scratch/users/k24053411/"):
+    def __init__(self, model_id="google/gemma-2-9b-it", lora_path = "/scratch/users/k24053411/mixlora/gemma"):
         
         logger.info(f"Loading {model_id}")
         try:
@@ -94,7 +94,7 @@ class GemmaClassifier:
         
         self.model.unload_adapter("default")
 
-        logger.debug(response_text)
+        # logger.debug(response_text)
 
         for char in response_text:
             if char in ['0', '1']:

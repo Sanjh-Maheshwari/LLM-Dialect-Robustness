@@ -81,8 +81,7 @@ class MistralClassifier:
         """Predict fact verification label"""
         
   
-        # lora_weights = os.path.join(self.lora_path, f"mixlora_mistral_{task.lower()}_{domain.lower()}_0")
-        lora_weights = os.path.join(self.lora_path, f"mixlora_mistral_sentiment_reddit_0/mixlora_mistral_sentiment_reddit_0_3000")
+        lora_weights = os.path.join(self.lora_path, f"mixlora_mistral2409_{task.lower()}_{domain.lower()}_0")
         
 
         self.model.load_adapter(lora_weights, "default")

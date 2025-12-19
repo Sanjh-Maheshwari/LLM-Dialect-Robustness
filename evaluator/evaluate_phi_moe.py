@@ -15,8 +15,8 @@ from evaluator.llm_services.phi_moe import PhiClassifier
 warnings.filterwarnings('ignore')
 
 VARIETIES = ["en-AU", "en-IN", "en-UK"]
-TASKS = ["Sarcasm", "Sentiment"]
-DOMAINS = ["Reddit"]
+TASKS = ["Sentiment"]
+DOMAINS = ["Google"]
 
 TEST_DATA_PATH = "data/instruction/besstie/test.json"
 RESULTS_DIR = "results_besstie/v1/phi"

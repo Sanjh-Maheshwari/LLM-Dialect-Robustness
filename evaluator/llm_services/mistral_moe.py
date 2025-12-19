@@ -93,7 +93,7 @@ class MistralClassifier:
         
         self.model.unload_adapter("default")
 
-        logger.debug(response_text)
+        # logger.debug(response_text)
 
         for char in response_text:
             if char in ['0', '1']:

@@ -10,7 +10,7 @@ warnings.filterwarnings('ignore')
 class MistralMOEClassifier:
     """Mistral MOE classifier with few-shot support"""
 
-    def __init__(self, model_id="mistralai/Mistral-7B-Instruct-v0.1", lora_path="/scratch/users/k24053411/mixlora/mistral7b"):
+    def __init__(self, model_id="mistralai/Mistral-7B-Instruct-v0.1", lora_path="/scratch/users/k24053411/mixlora/mistral"):
         logger.info(f"Loading {model_id} with MoE-PEFT")
 
         try:

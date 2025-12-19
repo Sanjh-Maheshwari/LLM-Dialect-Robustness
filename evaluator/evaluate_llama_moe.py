@@ -15,8 +15,8 @@ from evaluator.llm_services.llama_moe import LlamaClassifier
 warnings.filterwarnings('ignore')
 
 VARIETIES = ["en-UK", "en-IN", "en-AU"]
-TASKS = ["Sarcasm", "Sentiment"]
-DOMAINS = ["Reddit", "Google"]
+TASKS = ["Sentiment"]
+DOMAINS = ["Google"]
 
 TEST_DATA_PATH = "data/instruction/besstie/test.json"
 RESULTS_DIR = "results_besstie/v1/llama"
@@ -98,7 +98,10 @@ def evaluate_dialect(model, variety, task, domain, json_path):
 
     true_labels = dialect_df['response'].tolist()
     accuracy = accuracy_score(true_labels, predictions)
-    f1 = f1_score(true_labels, predictions, average='macro', zero_division=0)
+
+    method = "weighted"
+    logger.warning(f"Using averaging method : {method}")
+    f1 = f1_score(true_labels, predictions, average=method, zero_division=0)
 
     logger.info(f"Accuracy: {accuracy:.4f}, F1: {f1:.4f}")
 

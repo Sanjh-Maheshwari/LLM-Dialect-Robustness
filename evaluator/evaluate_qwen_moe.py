@@ -15,8 +15,8 @@ from evaluator.llm_services.qwen_moe import QwenClassifier
 warnings.filterwarnings('ignore')
 
 VARIETIES = ["en-AU", "en-IN", "en-UK"]
-TASKS = ["Sarcasm", "Sentiment"]
-DOMAINS = ["Reddit", "Google"]
+TASKS = ["Sentiment"]
+DOMAINS = ["Google"]
 
 TEST_DATA_PATH = "data/instruction/besstie/test.json"
 RESULTS_DIR = "results_besstie/v1/qwen"
@@ -98,7 +98,7 @@ def evaluate_dialect(model, variety, task, domain, json_path):
     true_labels = dialect_df['response'].tolist()
     accuracy = accuracy_score(true_labels, predictions)
 
-    average = "macro"
+    average = "weighted"
     logger.warning(f"Using following f1 average : {average}")
     f1 = f1_score(true_labels, predictions, average=average, zero_division=0)
 
