@@ -85,6 +85,7 @@ class TrainConfig(DispatcherConfig):
                     instruction=data_point.inputs.instruction,
                     input=data_point.inputs.input,
                     label=data_point.inputs.label,
+                    tokenizer = tokenizer.tokenizer
                 )
 
             data_point.tokens = tokenizer.encode(data_point.inputs, **tokenizer_kwargs)

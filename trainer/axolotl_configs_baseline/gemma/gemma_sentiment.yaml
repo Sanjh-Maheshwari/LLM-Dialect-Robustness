@@ -23,7 +23,7 @@ datasets:
 dataset_prepared_path: last_run_prepared
 dataset_exact_deduplication: true
 val_set_size: 0
-output_dir: /scratch/users/k24053411/axolotl/gemma/baseline/en_Reddit_Sentiment_adapter
+output_dir: /output/axolotl/gemma/baseline/en_Reddit_Sentiment_adapter
 resume_from_checkpoint:
 
 model_config:
@@ -72,4 +72,4 @@ save_optimizer_states: false
 # deepspeed: configs/zero2.json
 
 weight_decay: 0.0
-save_first_step: false  # uncomment this to validate checkpoint saving works with your config
+save_first_step: false # uncomment this to validate checkpoint saving works with your config

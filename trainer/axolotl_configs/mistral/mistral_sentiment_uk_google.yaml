@@ -18,7 +18,7 @@ datasets:
 
 dataset_prepared_path: last_run_prepared
 val_set_size: 0
-output_dir: /scratch/users/k24053411/axolotl/mistral/en-UK_Sentiment_Google_adapter
+output_dir: /output/axolotl/mistral/en-UK_Sentiment_Google_adapter
 
 model_config:
   output_router_logits: true
@@ -63,10 +63,10 @@ loss_watchdog_patience: 3
 
 warmup_ratio: 0.03
 evals_per_epoch: 1
-save_strategy: "no" 
+save_strategy: "no"
 save_steps: 0
 save_optimizer_states: false
 
 deepspeed: configs/zero2.json
 
-save_first_step: false  # uncomment this to validate checkpoint saving works with your config
+save_first_step: false # uncomment this to validate checkpoint saving works with your config

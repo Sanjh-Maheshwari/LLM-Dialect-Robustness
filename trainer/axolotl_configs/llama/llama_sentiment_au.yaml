@@ -15,7 +15,7 @@ datasets:
 
 dataset_prepared_path: last_run_prepared
 val_set_size: 0
-output_dir: /scratch/users/k24053411/axolotl/llama/en-AU_Sentiment_Reddit_adapter
+output_dir: /output/axolotl/llama/en-AU_Sentiment_Reddit_adapter
 resume_from_checkpoint:
 
 model_config:
@@ -58,7 +58,7 @@ loss_watchdog_patience: 3
 
 warmup_ratio: 0.1
 evals_per_epoch: 1
-save_strategy: "no" 
+save_strategy: "no"
 save_steps: 0
 save_optimizer_states: false
 
@@ -67,4 +67,4 @@ deepspeed: configs/zero2.json
 weight_decay: 0.0
 special_tokens:
   pad_token: <|end_of_text|>
-save_first_step: false  # uncomment this to validate checkpoint saving works with your config
+save_first_step: false # uncomment this to validate checkpoint saving works with your config

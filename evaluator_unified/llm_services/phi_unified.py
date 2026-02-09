@@ -13,8 +13,8 @@ from peft import PeftModel
 warnings.filterwarnings('ignore')
 
 # Adapter directories
-DIALECT_ADAPTER_DIR = "/scratch/users/k24053411/axolotl/phi_3"
-BASELINE_ADAPTER_DIR = "/scratch/users/k24053411/axolotl/phi_3/baseline"
+DIALECT_ADAPTER_DIR = "./output/axolotl/phi_3"
+BASELINE_ADAPTER_DIR = "./output/axolotl/phi_3/baseline"
 
 
 class Phi3StoppingCriteria(StoppingCriteria):
@@ -77,15 +77,7 @@ class Phi3UnifiedClassifier:
             self.model = None
 
     def load_adapter(self, task: str, domain: str, method: str, dialect: str = None):
-        """
-        Load adapter based on method
 
-        Args:
-            task: Task name (e.g., "Sarcasm", "Sentiment")
-            domain: Domain name (e.g., "Reddit")
-            method: One of ["lora_grouping", "cat", "ties", "base_instruct", "individual_dialect"]
-            dialect: Dialect for individual_dialect method (e.g., "en-AU")
-        """
         # For base_instruct, just use the base model without any adapter
         if method == "base_instruct":
             logger.info("Using base instruct model without any adapter")
@@ -213,13 +205,7 @@ class Phi3UnifiedClassifier:
         return prompt
 
     def format_fewshot_prompt(self, instruction: str, few_shot_examples: list, context: str = "") -> str:
-        """Format few-shot prompt using Phi-3 chat template
 
-        Args:
-            instruction: Task instruction
-            few_shot_examples: List of dicts with 'context' and 'response' keys
-            context: Current test context
-        """
         # Build few-shot examples
         examples_text = ""
         for i, example in enumerate(few_shot_examples, 1):
@@ -306,18 +292,7 @@ class Phi3UnifiedClassifier:
     def predict_fewshot(self, instruction: str, context: str, few_shot_examples: list,
                         dialect: str, task: str, domain: str, method: str,
                         max_new_tokens: int = 50) -> str:
-        """Predict classification label with few-shot examples
 
-        Args:
-            instruction: Task instruction
-            context: Test context to classify
-            few_shot_examples: List of dicts with 'context' and 'response' keys
-            dialect: Dialect variety
-            task: Task name
-            domain: Domain name
-            method: Merging method
-            max_new_tokens: Max tokens to generate
-        """
         try:
             self.load_adapter(task, domain, method, dialect=dialect)
             prompt = self.format_fewshot_prompt(instruction, few_shot_examples, context=context)

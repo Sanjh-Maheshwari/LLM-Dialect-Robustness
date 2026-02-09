@@ -49,6 +49,7 @@ class Prompter:
         instruction: str,
         input: Union[None, str] = None,
         label: Union[None, str] = None,
+        tokenizer: AutoTokenizer = None
     ) -> str:
         # returns the full prompt from instruction and optional input
         # if a label (=response, =output) is provided, it's also appended.
@@ -60,8 +61,9 @@ class Prompter:
             else:
                 user_input = instruction
 
-            tokenizer = AutoTokenizer.from_pretrained("google/gemma-2-9b-it")
-
+            if not tokenizer: 
+                tokenizer = AutoTokenizer.from_pretrained("google/gemma-2-9b-it")
+                
             if label:
                 messages = [
                     {"role": "user", "content": user_input},
@@ -74,6 +76,7 @@ class Prompter:
                 messages = [
                     {"role": "user", "content": user_input},
                 ]
+                
                 res = tokenizer.apply_chat_template(
                     messages, add_generation_prompt=True, tokenize=False,
                 )
@@ -85,7 +88,8 @@ class Prompter:
             else:
                 user_input = instruction
 
-            tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-Instruct-v0.1")
+            if not tokenizer: 
+                tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-Instruct-v0.1")
 
             if label:
                 messages = [
@@ -110,7 +114,8 @@ class Prompter:
             else:
                 user_input = instruction
 
-            tokenizer = AutoTokenizer.from_pretrained("microsoft/Phi-3-medium-4k-instruct")
+            if not tokenizer:
+                tokenizer = AutoTokenizer.from_pretrained("microsoft/Phi-3-medium-4k-instruct")
 
             if label:
                 messages = [
@@ -135,7 +140,8 @@ class Prompter:
             else:
                 user_input = instruction
 
-            tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-7B-Instruct")
+            if not tokenizer: 
+                tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-7B-Instruct")
 
             if label:
                 messages = [
@@ -160,8 +166,9 @@ class Prompter:
                 user_input = f"{instruction}\n{input}"
             else:
                 user_input = instruction
-
-            tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3.1-8B-Instruct")
+            
+            if not tokenizer: 
+                tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3.1-8B-Instruct")
 
             if label:
                 messages = [
@@ -189,8 +196,6 @@ class Prompter:
 
             if label:
                 res = f"{res}{label}\n"
-        
-        # print(res)
 
         return res
 
@@ -223,16 +228,16 @@ class Prompter:
                 return output.strip()
 
             else:
-                logger.warning(f"Unknown template type: {self.template}, returning output as-is")
+                logging.warning(f"Unknown template type: {self.template}, returning output as-is")
                 return output.strip()
         
         elif isinstance(self.template, dict):
             if "response_split" in self.template:
                 return output.split(self.template["response_split"])[-1].strip()
             else:
-                logger.warning("Template dict missing 'response_split' key, returning output as-is")
+                logging.warning("Template dict missing 'response_split' key, returning output as-is")
                 return output.strip()
         
         else:
-            logger.warning(f"Unexpected template type: {type(self.template)}, returning output as-is")
+            logging.warning(f"Unexpected template type: {type(self.template)}, returning output as-is")
             return output.strip()

@@ -14,11 +14,11 @@ datasets:
   - path: data/axolotl/en-IN_Sentiment_Reddit.jsonl
     type: chat_template
     chat_template: tokenizer_default
-    roles_to_train: ["user", "assistant"] 
+    roles_to_train: ["user", "assistant"]
 
 dataset_prepared_path: last_run_prepared
 val_set_size: 0
-output_dir: /scratch/users/k24053411/axolotl/mistral7b/en-IN_Sentiment_Reddit_adapter
+output_dir: /output/axolotl/mistral7b/en-IN_Sentiment_Reddit_adapter
 
 model_config:
   output_router_logits: true
@@ -67,4 +67,4 @@ save_optimizer_states: false
 deepspeed: configs/zero2.json
 
 weight_decay: 0.0
-save_first_step: false  # uncomment this to validate checkpoint saving works with your config
+save_first_step: false # uncomment this to validate checkpoint saving works with your config

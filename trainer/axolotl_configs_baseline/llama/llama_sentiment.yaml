@@ -10,20 +10,20 @@ load_in_4bit: false
 datasets:
   - path: data/axolotl/en-AU_Sentiment_Reddit.jsonl
     type: chat_template
-    roles_to_train: ["user", "assistant"] 
+    roles_to_train: ["user", "assistant"]
     train_on_eos: all
   - path: data/axolotl/en-IN_Sentiment_Reddit.jsonl
     type: chat_template
-    roles_to_train: ["user", "assistant"] 
+    roles_to_train: ["user", "assistant"]
     train_on_eos: all
   - path: data/axolotl/en-UK_Sentiment_Reddit.jsonl
     type: chat_template
-    roles_to_train: ["user", "assistant"] 
+    roles_to_train: ["user", "assistant"]
     train_on_eos: all
 
 dataset_prepared_path: last_run_prepared
 val_set_size: 0
-output_dir: /scratch/users/k24053411/axolotl/llama/baseline/en_Sentiment_Reddit_adapter
+output_dir: /output/axolotl/llama/baseline/en_Sentiment_Reddit_adapter
 
 model_config:
   output_router_logits: true
@@ -57,7 +57,7 @@ bf16: true
 tf32: false
 
 gradient_checkpointing: true
-resume_from_checkpoint: /scratch/users/k24053411/axolotl/llama/baseline/en_Sentiment_Reddit_adapter/checkpoint-848
+resume_from_checkpoint: /output/axolotl/llama/baseline/en_Sentiment_Reddit_adapter/checkpoint-848
 logging_steps: 10
 flash_attention: false
 
@@ -74,4 +74,4 @@ save_optimizer_states: false
 weight_decay: 0.0
 special_tokens:
   pad_token: <|end_of_text|>
-save_first_step: false  # uncomment this to validate checkpoint saving works with your config
+save_first_step: false # uncomment this to validate checkpoint saving works with your config

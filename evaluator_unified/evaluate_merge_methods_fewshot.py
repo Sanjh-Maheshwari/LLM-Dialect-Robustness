@@ -1,25 +1,3 @@
-"""
-Few-shot evaluation script for LoRA merging methods
-Supports 6 models: Phi-3, Mistral 7B, Mistral 2409, Qwen, LLaMA, Gemma 2
-
-Methods:
-- lora_grouping: Single adapter trained on all dialects
-- cat: Merge 3 dialect adapters using concatenation
-- ties: Merge 3 dialect adapters using TIES
-- base_instruct: No adapter, just the base instruct model
-- individual_dialect: Evaluate each dialect adapter separately
-
-For each test instance, samples 2 random examples from the same dialect/task/domain
-from the test set to use as few-shot examples.
-
-Usage:
-    python evaluate_merge_methods_fewshot.py --model phi --method lora_grouping
-    python evaluate_merge_methods_fewshot.py --model mistral7b --method cat
-    python evaluate_merge_methods_fewshot.py --model qwen --method ties
-    python evaluate_merge_methods_fewshot.py --model llama --method base_instruct
-    python evaluate_merge_methods_fewshot.py --model gemma2 --method individual_dialect
-"""
-
 import json
 import os
 import argparse
@@ -47,10 +25,7 @@ VARIETIES = ["en-AU", "en-IN", "en-UK"]
 TASKS = ["Sarcasm", "Sentiment"]
 DOMAINS = ["Reddit", "Google"]
 NUM_SHOTS = 2  # Number of few-shot examples
-
 TEST_DATA_PATH = "data/instruction/besstie/test.json"
-
-# Model mapping
 MODEL_CLASSES = {
     "phi": Phi3UnifiedClassifier,
     "mistral7b": Mistral7BUnifiedClassifier,
@@ -120,19 +95,10 @@ def load_besstie_data(json_path, variety, task, domain):
 def sample_fewshot_examples(dialect_df, current_idx, num_shots=NUM_SHOTS):
     """
     Sample random few-shot examples from the test set, excluding the current test instance
-
-    Args:
-        dialect_df: DataFrame containing all test examples for the dialect/task/domain
-        current_idx: Index of the current test instance (to exclude from sampling)
-        num_shots: Number of examples to sample (default: 2)
-
-    Returns:
-        List of dicts with 'context' and 'response' keys
     """
-    # Get all indices except the current one
+    
     available_indices = [i for i in range(len(dialect_df)) if i != current_idx]
 
-    # Sample random indices
     if len(available_indices) < num_shots:
         # If not enough examples, use what we have
         sampled_indices = available_indices
@@ -140,7 +106,6 @@ def sample_fewshot_examples(dialect_df, current_idx, num_shots=NUM_SHOTS):
         random.seed(42 + current_idx) # To ensure same samples are provided to each model
         sampled_indices = random.sample(available_indices, num_shots)
 
-    # Extract examples
     few_shot_examples = []
     for idx in sampled_indices:
         row = dialect_df.iloc[idx]
@@ -170,8 +135,6 @@ def evaluate_dialect_fewshot(model, variety, task, domain, method, json_path):
 
         # Sample few-shot examples (excluding current instance)
         few_shot_examples = sample_fewshot_examples(dialect_df, i, num_shots=NUM_SHOTS)
-
-        # print(few_shot_examples)
 
         prediction = model.predict_fewshot(
             instruction=instruction,
@@ -219,7 +182,7 @@ def main():
     parser.add_argument(
         "--output-dir",
         type=str,
-        default="results_besstie_unified_fewshot",
+        default="results",
         help="Output directory for results"
     )
 
@@ -229,14 +192,10 @@ def main():
     logger.info(f"Model: {args.model}")
     logger.info(f"Method: {args.method}")
     logger.info(f"Few-shot examples: {NUM_SHOTS}")
-    logger.info(f"Output directory: {args.output_dir}\n")
+    logger.info(f"Output directory: {args.output_dir}")
 
-    # Create output directory
     output_dir = os.path.join(args.output_dir, args.model, args.method)
     os.makedirs(output_dir, exist_ok=True)
-
-    # Initialize model
-    logger.info(f"Initializing {args.model} model...")
     ModelClass = MODEL_CLASSES[args.model]
     model = ModelClass()
 
@@ -244,13 +203,10 @@ def main():
         logger.error(f"Failed to load {args.model} model. Please check your setup.")
         return
 
-    # Evaluation loop
     all_results = {}
 
     for task in TASKS:
-        logger.info(f"\n{'='*60}")
         logger.info(f"Evaluating Task: {task}")
-        logger.info(f"{'='*60}")
 
         domains = DOMAINS if task == "Sentiment" else ["Reddit"]
         domain_results = {}
@@ -274,11 +230,6 @@ def main():
 
         all_results[task] = domain_results
 
-    # Compute average metrics
-    logger.info(f"\n{'='*60}")
-    logger.info("Computing average metrics...")
-    logger.info(f"{'='*60}")
-
     total_acc = []
     total_f1 = []
 
@@ -291,7 +242,6 @@ def main():
     avg_acc = sum(total_acc) / len(total_acc) if total_acc else 0
     avg_f1 = sum(total_f1) / len(total_f1) if total_f1 else 0
 
-    # Determine adapter type based on method
     if args.method == "lora_grouping":
         adapter_type = "baseline_single"
     elif args.method in ["cat", "ties"]:
@@ -303,7 +253,6 @@ def main():
     else:
         adapter_type = "unknown"
 
-    # Prepare output structure
     output_data = {
         "model": args.model,
         "method": args.method,
@@ -329,17 +278,10 @@ def main():
     with open(output_file, 'w') as f:
         json.dump(output_data, f, indent=2)
 
-    logger.info(f"\n{'='*60}")
     logger.info(f"Results Summary (Few-shot: {NUM_SHOTS} examples)")
-    logger.info(f"{'='*60}")
     logger.info(f"Average Accuracy: {avg_acc:.4f}")
     logger.info(f"Average F1: {avg_f1:.4f}")
-    logger.info(f"\nResults saved to: {output_file}")
-    logger.info(f"{'='*60}\n")
-
-    # Print full results
-    pprint(output_data)
-
+    logger.info(f"Results saved to: {output_file}")
 
 if __name__ == "__main__":
     main()

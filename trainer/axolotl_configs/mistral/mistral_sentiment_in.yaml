@@ -17,7 +17,7 @@ datasets:
 
 dataset_prepared_path: last_run_prepared
 val_set_size: 0
-output_dir: /scratch/users/k24053411/axolotl/mistral-in-reddit-sentiment
+output_dir: /output/axolotl/mistral-in-reddit-sentiment
 
 model_config:
   output_router_logits: true
@@ -53,7 +53,7 @@ tf32: false
 gradient_checkpointing: true
 gradient_checkpointing_kwargs:
   use_reentrant: true
-resume_from_checkpoint: /scratch/users/k24053411/axolotl/mistral-au-reddit-sentiment/checkpoint-476
+resume_from_checkpoint: /output/axolotl/mistral-au-reddit-sentiment/checkpoint-476
 logging_steps: 10
 flash_attention: false
 
@@ -80,4 +80,4 @@ fsdp_config:
   fsdp_auto_wrap_policy: TRANSFORMER_BASED_WRAP
 special_tokens:
 
-save_first_step: true  # uncomment this to validate checkpoint saving works with your config
+save_first_step: true # uncomment this to validate checkpoint saving works with your config

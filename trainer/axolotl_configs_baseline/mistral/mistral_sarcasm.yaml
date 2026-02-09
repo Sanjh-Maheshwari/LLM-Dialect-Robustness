@@ -26,7 +26,7 @@ datasets:
 
 dataset_prepared_path: last_run_prepared
 val_set_size: 0
-output_dir: /scratch/users/k24053411/axolotl/mistral/baseline/en-reddit-sarcasm
+output_dir: /output/axolotl/mistral/baseline/en-reddit-sarcasm
 
 model_config:
   output_router_logits: true
@@ -75,4 +75,4 @@ save_optimizer_states: false
 deepspeed: configs/zero2.json
 
 weight_decay: 0.0
-save_first_step: false  # uncomment this to validate checkpoint saving works with your config
+save_first_step: false # uncomment this to validate checkpoint saving works with your config

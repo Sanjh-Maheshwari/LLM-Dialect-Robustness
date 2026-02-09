@@ -12,11 +12,11 @@ eot_tokens:
 datasets:
   - path: data/axolotl/en-UK_Sarcasm_Reddit.jsonl
     type: chat_template
-    roles_to_train: ["user", "assistant"] 
+    roles_to_train: ["user", "assistant"]
 
 dataset_prepared_path: last_run_prepared
 val_set_size: 0
-output_dir: /scratch/users/k24053411/axolotl/gemma/en-UK_Sarcasm_Reddit_adapter
+output_dir: /output/axolotl/gemma/en-UK_Sarcasm_Reddit_adapter
 resume_from_checkpoint:
 
 model_config:
@@ -30,7 +30,7 @@ sample_packing: true
 pad_to_sequence_len: false
 
 lora_r: 16
-lora_alpha: 16  
+lora_alpha: 16
 lora_dropout: 0.05
 lora_target_linear: true
 
@@ -63,4 +63,4 @@ saves_per_epoch: 1
 save_optimizer_states: false
 
 weight_decay: 0.0
-save_first_step: false  # uncomment this to validate checkpoint saving works with your config
+save_first_step: false # uncomment this to validate checkpoint saving works with your config
