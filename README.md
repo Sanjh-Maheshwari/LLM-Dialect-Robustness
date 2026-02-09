@@ -12,14 +12,14 @@ In this work, we propose two parameter-efficient frameworks for improving dialec
 
 2. **DialectMoE**: Built on top of Mixture of Experts LoRA, this approach introduces multiple LoRA-based experts to the feed-forward layer to internally model dialectal dependencies with learned routing mechanisms.
 
-Our comprehensive analysis on five open-source LLMs for sentiment and sarcasm tasks in zero- and few-shot settings shows that our proposed approaches enhance the dialect robustness of LLMs and outperform instruct and LoRA fine-tuning based approaches.
+Our comprehensive analysis on five open-source LLMs for sentiment and sarcasm tasks in zero and few-shot settings shows that our proposed approaches enhance the dialect robustness of LLMs and outperform instruct and LoRA fine-tuning based approaches.
 
 ### Key Features
 
 - **Two Parameter-Efficient Methods**: DialectFusion (adapter merging) and DialectMoE (mixture of experts)
 - **Multi-Dialect Evaluation**: Comprehensive testing across en-AU (Australian), en-IN (Indian), en-UK (British) varieties using BESSTIE benchmark
 - **Multiple Model Families**: Llama, Mistral, Gemma, Qwen, Phi (5 open-source LLMs)
-- **Efficient Training Support**: DeepSpeed ZeRO-3 and FSDP integration with QLoRA for memory-efficient training
+- **Efficient Training Support**: DeepSpeed ZeRO-2/ZeRO-3 and FSDP integration with QLoRA for memory-efficient training
 
 ## Installation
 
@@ -175,7 +175,7 @@ Results are saved to `results` directory by default but can be changed by using 
 
 ### GPU Requirements
 
-It is recommended to use an NVIDIA GPU with minimum of 40 GB RAM. For the experiments we USED two NVIDIA A100 40GB GPUs and two NVIDIA A100 80GB GPUs from CREATE HPC depending on availability.
+It is recommended to use an NVIDIA GPU with minimum of 40 GB RAM. For the experiments we USED 2x NVIDIA A100 40GB GPUs and 2x NVIDIA A100 80GB GPUs from CREATE HPC.
 
 ### Supported Models
 
@@ -237,3 +237,4 @@ This project is licensed under the MIT License. -->
 - [DeepSpeed](https://github.com/microsoft/DeepSpeed) and Microsoft Research
 - [Axolotl](https://github.com/axolotl-ai-cloud/axolotl) training framework
 - [MixLoRA (MoE-PEFT)](https://github.com/TUDB-Labs/MixLoRA) for Mixture of Expert Parameter-Efficient Fine-Tuning
+- [Create-HPC](https://docs.er.kcl.ac.uk/CREATE/acknowledging/) for compute access
